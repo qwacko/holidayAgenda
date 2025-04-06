@@ -148,6 +148,90 @@ footer {
   transition: width 0.5s ease;
 }
 
+/* --- Collapsible Section Styles --- */
+
+.collapsible-header {
+  cursor: pointer;
+  position: relative; /* Needed for positioning the pseudo-element */
+  padding-right: 25px; /* Space for the indicator */
+  user-select: none; /* Prevent text selection on click */
+}
+
+/* Indicator arrow/plus-minus */
+.collapsible-header::after {
+  content: "+"; /* Default: collapsed indicator */
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-weight: bold;
+  font-size: 1.2em;
+  color: #666;
+  transition: transform 0.3s ease; /* Smooth rotation */
+}
+
+.collapsible.expanded > .collapsible-header::after {
+  content: "−"; /* Expanded indicator */
+}
+
+/* Content container */
+.collapsible-content {
+  overflow: hidden;
+  transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+  max-height: 0; /* Collapsed by default (JS adds 'expanded' class) */
+  padding-top: 0;
+  padding-bottom: 0;
+  /* Add specific padding for day/week content if needed */
+}
+
+.collapsible.expanded > .collapsible-content {
+  max-height: 2000px; /* Set a large enough max-height for expanded content */
+  /* Adjust padding for expanded state if needed */
+  padding-top: 10px; /* Example padding */
+  padding-bottom: 10px; /* Example padding */
+}
+
+/* Adjustments for nested collapsibles */
+.week-container > .collapsible-content {
+  /* Optional: Add padding or margin if needed between week header and day containers */
+}
+
+.day-container > .collapsible-content {
+  padding-left: 15px; /* Indent events within the day */
+  border-left: 2px solid #eee; /* Visual separation for events */
+  margin-left: 5px; /* Space from day header */
+}
+
+/* Ensure day container border is only applied when expanded */
+.day-container.expanded {
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+.day-container.collapsed {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+/* Remove bottom border from the last day in an expanded week */
+.week-container.expanded
+  > .collapsible-content
+  > .day-container:last-child.expanded {
+  border-bottom: none;
+}
+
+/* Specific header styling adjustments */
+.week-header.collapsible-header {
+  /* Inherits base week-header styles */
+}
+
+.day-header.collapsible-header {
+  /* Inherits base day-header styles */
+  /* Add margin if needed when collapsed */
+}
+.day-container.collapsed > .day-header {
+  margin-bottom: 0; /* Remove margin below header when day is collapsed */
+}
+
 .progress-text {
   text-align: center;
   margin-top: 5px;
