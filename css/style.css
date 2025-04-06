@@ -33,3 +33,135 @@ footer {
   background: #333;
   color: #fff;
 }
+
+/* Trip styles */
+.trip-header {
+  background-color: #4a89dc;
+  color: white;
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.week-container {
+  margin-bottom: 30px;
+  border-left: 4px solid #4a89dc;
+  padding-left: 15px;
+}
+
+.week-header {
+  background-color: #f5f7fa;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  font-weight: bold;
+  color: #4a89dc;
+}
+
+.day-container {
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.day-header {
+  font-weight: bold;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.day-date {
+  color: #666;
+}
+
+.current-day {
+  background-color: #fffde7;
+  border-left: 4px solid #ffd600;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.event {
+  margin: 10px 0;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-radius: 5px;
+}
+
+.event-time {
+  font-weight: bold;
+  color: #555;
+}
+
+.flight-event {
+  background-color: #e3f2fd;
+  border-left: 4px solid #2196f3;
+}
+
+.accommodation-event {
+  background-color: #e8f5e9;
+  border-left: 4px solid #4caf50;
+}
+
+.car-rental-event {
+  background-color: #fff3e0;
+  border-left: 4px solid #ff9800;
+}
+
+.cruise-event {
+  background-color: #e0f7fa;
+  border-left: 4px solid #00bcd4;
+}
+
+.activity-event {
+  background-color: #f3e5f5;
+  border-left: 4px solid #9c27b0;
+}
+
+.location {
+  font-style: italic;
+  color: #666;
+}
+
+.progress-container {
+  margin: 20px 0;
+  background-color: #f5f7fa;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.progress-bar {
+  height: 20px;
+  background-color: #e0e0e0;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: #4a89dc;
+  border-radius: 10px;
+  transition: width 0.5s ease;
+}
+
+.progress-text {
+  text-align: center;
+  margin-top: 5px;
+  font-size: 0.9em;
+  color: #666;
+}
+
+@media (max-width: 600px) {
+  main {
+    padding: 10px;
+  }
+
+  .day-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
