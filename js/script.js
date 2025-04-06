@@ -493,170 +493,253 @@ function structureDataForAlpine(
     dayCounter++;
     const dateStr = formatDate(d);
     const dayName = getDayName(d);
-    const items = itineraryByDate[dateStr] || [];
+    const allDayItems = itineraryByDate[dateStr] || []; // Renamed from items
     const info = dailyInfoByDate[dateStr] || {
       title: "Error",
       stayingAt: null,
       // onCruise: null, // Removed
     };
 
-    // Find week for this day
-    const weekData = weeks.find((w) => {
+    // Find the corresponding week definition or create a default one
+    const weekInfo = weeks.find((w) => {
       const weekStart = parseDate(w.startDate);
       const weekEnd = parseDate(w.endDate);
       return weekStart && weekEnd && d >= weekStart && d <= weekEnd;
-    });
+    }) || {
+      id: `week-${processedWeeks.length + 1}`,
+      title: `Week ${processedWeeks.length + 1}`,
+    }; // Default week
 
-    if (weekData && (!currentWeek || currentWeek.id !== weekData.id)) {
-      // Start a new week
+    // Start a new week if necessary
+    if (!currentWeek || currentWeek.id !== weekInfo.id) {
       currentWeek = {
-        id: weekData.id,
-        header: weekData.weekHeader,
+        id: weekInfo.id,
+        title: weekInfo.weekHeader,
         days: [],
       };
       processedWeeks.push(currentWeek);
     }
 
-    if (currentWeek) {
-      // Add day to the current week
-      currentWeek.days.push({
-        dateStr: dateStr,
-        dayNumber: dayCounter,
-        dayName: dayName,
-        title: info.title,
-        stayingAt: info.stayingAt, // Pass stayingAt info
-        // onCruise: info.onCruise, // Removed
-        items: items.map((item) => {
+    // --- NEW: Separate confirmed and tentative items ---
+    const confirmedItemsRaw = allDayItems.filter((item) => !item.tentative);
+    const tentativeItemsRaw = allDayItems.filter((item) => item.tentative);
+
+    // --- Process items (both confirmed and tentative) ---
+    const processItems = (itemsToProcess) => {
+      return itemsToProcess
+        .filter((item) => {
+          // Filter out generic "Explore <Location>" if it matches the day's title
+          // and filter out accommodation/cruise stay events (handled by dailyInfo)
+          const isGenericExplore = isGenericExploreActivity(
+            item.description,
+            info.title
+          );
+          const isStayEvent =
+            item.eventType === "accommodation-stay" ||
+            item.eventType === "cruise-stay";
+          return !isGenericExplore && !isStayEvent;
+        })
+        .map((item) => {
           const location = locations[item.locationRef];
-          // Use pre-fetched address from groupItineraryByDate if available, otherwise lookup
-          const address = item.locationAddress || location?.address;
-          const mapUrl = address
+          const locationName = item.locationName || location?.name; // Use pre-calculated name first
+          const locationAddress = item.locationAddress || location?.address; // Use pre-calculated address first
+          const mapLink = locationAddress
             ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                address
+                locationAddress
+              )}`
+            : locationName
+            ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                locationName
               )}`
             : null;
 
           return {
-            // Map raw item data to what the template needs
-            id: item.id,
-            eventType: item.eventType || item.type || "other", // Ensure eventType exists
-            time: item.time || item.startTime || null, // Handle different time properties
-            displayDescription: item.description || item.name || "", // Use description or name
-            // Use pre-fetched name from groupItineraryByDate if available, otherwise lookup
-            locationName: item.locationName || location?.name || null,
-            formattedLocation: formatLocation(location), // Pre-format location details for display
-            confirmation: item.confirmation || null,
-            notes: item.notes || null,
-            // Determine if it's a generic "Explore <Location>" activity
-            isGenericExplore: isGenericExploreActivity(
-              item.description,
-              info.title // Pass the calculated day title for comparison
-            ),
-            // Add tentative flag
-            tentative:
-              item.tentative || item.certainty === "tentative" || false,
-            // Add original type for potential styling/logic
-            originalType: item.type || null,
-            // Add URL if present
-            url: item.url || null,
-            // Add Google Maps link if address exists
-            mapUrl: mapUrl,
-            // Add icon name
-            icon: getIconForType(
-              item.eventType || item.type || "other",
-              item.description
-            ), // Pass description for context
-            // Flag check-in/out/embark/disembark for potential styling
-            isCheckInOut: item.isCheckInOut || false,
+            ...item, // Spread original item properties
+            icon: getIconForType(item.eventType || item.type, item.description),
+            formattedLocation: formatLocation(location), // Format location name/details
+            mapLink: mapLink,
+            // Keep original description, details, time etc. from item
           };
-        }),
-      });
-    }
+        });
+    };
+
+    const confirmedItems = processItems(confirmedItemsRaw);
+    const tentativeItems = processItems(tentativeItemsRaw);
+    // --- End NEW ---
+
+    // Add the day to the current week\
+    currentWeek.days.push({
+      dateStr: dateStr,
+      dayName: dayName,
+      dayNumber: dayCounter,
+      title: info.title,
+      stayingAt: info.stayingAt,
+      // onCruise: info.onCruise, // Removed
+      // items: processedItems, // OLD: Replaced
+      confirmedItems: confirmedItems, // NEW
+      tentativeItems: tentativeItems, // NEW
+      hasTentativeItems: tentativeItems.length > 0, // NEW: Flag for easier template logic
+      tentativeItemCount: tentativeItems.length, // NEW: Count for summary
+    });
   }
+
   return processedWeeks;
 }
 
-// --- Icon Mapping ---
+// --- Helper function to get icon based on type ---
 function getIconForType(type, description = "") {
-  const typeLower = type?.toLowerCase() || "other";
-  const descLower = description?.toLowerCase() || "";
+  // Normalize description for keyword checking
+  const lowerDesc = description.toLowerCase();
 
-  // Basic mapping - assumes Font Awesome classes (e.g., fas fa-...)
-  // Replace with actual icon classes/names as needed
+  // Specific keyword checks first
+  if (lowerDesc.includes("vs")) return "⚽"; // Soccer match
+  if (lowerDesc.includes("race")) return "🏁"; // Race event
+
   const iconMap = {
-    flight: "fas fa-plane-departure", // More specific
-    "accommodation-check-in": "fas fa-sign-in-alt",
-    "accommodation-check-out": "fas fa-sign-out-alt",
-    "accommodation-stay": "fas fa-bed",
-    hotel: "fas fa-hotel", // If type is directly 'hotel'
-    airbnb: "fas fa-home", // If type is directly 'airbnb'
-    "cruise-embark": "fas fa-ship",
-    "cruise-disembark": "fas fa-anchor",
-    "cruise-stay": "fas fa-ship", // Use ship icon for stay days
-    "port-call": "fas fa-map-marked-alt", // More specific
-    "sea-day": "fas fa-water",
-    "car-rental": "fas fa-car",
-    activity: "fas fa-calendar-check", // Generic activity
-    shopping: "fas fa-shopping-bag",
-    meal: "fas fa-utensils", // Example for potential future type
-    park: "fas fa-tree",
-    gardens: "fas fa-leaf",
-    race: "fas fa-flag-checkered",
-    visit: "fas fa-landmark",
-    explore: "fas fa-binoculars", // For generic explore
-    travel: "fas fa-suitcase-rolling", // Generic travel
-    other: "fas fa-info-circle",
+    flight: "✈️",
+    "car-rental": "🚗",
+    "car-rental-pickup": "🚗", // Specific pickup
+    "car-rental-drop-off": "🚗", // Specific dropoff
+    accommodation: "🏨",
+    "accommodation-check-in": "🏨", // Check-in
+    "accommodation-check-out": "🏨", // Check-out
+    airbnb: "🏠", // Could use a house icon for Airbnb
+    hotel: "🏨",
+    cruise: "🚢",
+    "cruise-embark": "🚢", // Embark
+    "cruise-disembark": "🚢", // Disembark
+    "port-call": "⚓", // Port call
+    "sea-day": "🌊", // Day at sea
+    activity: "🚶‍♀️", // Default activity
+    shopping: "🛍️", // Shopping specific
+    gardens: "🌳", // Garden specific
+    park: "🌳", // Park specific
+    visit: "🏛️", // Visiting a landmark/building
+    explore: "🗺️", // General exploration
+    food: "🍔", // Food related
+    travel: "➡️", // Generic travel/transition if not flight/car
+    arrival: "🛬", // Generic arrival
+    departure: "🛫", // Generic departure
+    default: "📌", // Default pin
   };
 
-  // Contextual overrides based on description
-  if (descLower.includes("disney") || descLower.includes("theme park"))
-    return "fas fa-magic";
-  if (
-    descLower.includes("stadium") ||
-    descLower.includes("match") ||
-    descLower.includes("game")
-  )
-    return "fas fa-futbol"; // Soccer ball
-  if (descLower.includes("capitol")) return "fas fa-landmark";
-  if (descLower.includes("garden")) return iconMap["gardens"];
-  if (descLower.includes("park") && !descLower.includes("shopping"))
-    return iconMap["park"];
-  if (descLower.includes("shopping")) return iconMap["shopping"];
-  if (descLower.includes("race")) return iconMap["race"];
+  // More specific activity checks based on type AND description
+  if (type === "activity") {
+    if (lowerDesc.includes("shopping")) return iconMap.shopping;
+    if (lowerDesc.includes("garden")) return iconMap.gardens;
+    if (lowerDesc.includes("park")) return iconMap.park;
+    if (lowerDesc.includes("visit")) return iconMap.visit;
+    if (lowerDesc.includes("explore")) return iconMap.explore;
+    if (lowerDesc.includes("food") || lowerDesc.includes("walmart"))
+      return iconMap.food;
+  }
 
-  // Handle variations like 'car-rental-pickup', 'car-rental-drop-off'
-  if (typeLower.startsWith("car-rental")) return iconMap["car-rental"];
-  // Handle accommodation types passed directly
-  if (typeLower === "hotel") return iconMap["hotel"];
-  if (typeLower === "airbnb") return iconMap["airbnb"];
-  // Default accommodation/cruise icons if specific event types aren't matched
-  if (typeLower.startsWith("accommodation"))
-    return iconMap["accommodation-stay"];
-  if (typeLower.startsWith("cruise")) return iconMap["cruise-stay"];
-  if (typeLower.includes("explore")) return iconMap["explore"];
-  if (typeLower.includes("visit")) return iconMap["visit"];
+  // Handle specific event types like check-in/out, embark/disembark
+  if (type === "accommodation-check-in")
+    return iconMap["accommodation-check-in"];
+  if (type === "accommodation-check-out")
+    return iconMap["accommodation-check-out"];
+  if (type === "cruise-embark") return iconMap["cruise-embark"];
+  if (type === "cruise-disembark") return iconMap["cruise-disembark"];
+  if (type === "car-rental-pickup") return iconMap["car-rental-pickup"];
+  if (type === "car-rental-drop-off") return iconMap["car-rental-drop-off"];
 
-  return iconMap[typeLower] || iconMap["other"]; // Fallback to 'other'
+  return iconMap[type] || iconMap.default;
 }
 
-// --- Progress Calculation ---
+// --- Helper function to calculate trip progress ---
 function calculateProgress(startDateUTC, endDateUTC, nowUTC) {
   if (!startDateUTC || !endDateUTC || !nowUTC) return 0;
   const totalDuration = endDateUTC - startDateUTC;
   const elapsedDuration = nowUTC - startDateUTC;
-  if (totalDuration <= 0) return 100; // Avoid division by zero or negative duration
+  if (totalDuration <= 0) return nowUTC >= endDateUTC ? 100 : 0; // Handle same day or past trips
   const progress = Math.max(
     0,
     Math.min(100, (elapsedDuration / totalDuration) * 100)
   );
-  return progress;
+  return Math.round(progress);
 }
 
+// --- Helper function to get progress text ---
 function getProgressText(progress) {
-  if (progress <= 0) return "Trip hasn't started yet!";
-  if (progress >= 100) return "Trip completed!";
-  return `Trip is ${progress.toFixed(1)}% complete.`;
+  if (progress <= 0) return "Not Started";
+  if (progress >= 100) return "Completed";
+  return `${progress}% Complete`;
 }
 
-// --- Alpine.js Component ---
-// (This part remains in index.html within the <script> tag)
+// --- Initialize Alpine.js ---
+document.addEventListener("alpine:init", () => {
+  Alpine.data("tripAgenda", () => ({
+    tripTitle: "Loading...",
+    tripDates: "",
+    weeks: [],
+    locations: {},
+    loading: true,
+    error: null,
+    tripStartDateUTC: null,
+    tripEndDateUTC: null,
+    todayDateString: formatDate(new Date()),
+    openWeekIds: [], // IDs of open weeks
+    openDayIds: [], // dateStr of open days
+    nowUTC: Date.now(), // For progress calculation
+    progressPercent: 0,
+    progressText: "Calculating...",
+
+    // Method to initialize data
+    async init() {
+      const data = await loadTripData();
+      this.tripTitle = data.tripTitle;
+      this.tripDates = data.tripDates;
+      this.weeks = data.weeks;
+      this.locations = data.locations;
+      this.loading = data.loading;
+      this.error = data.error;
+      this.tripStartDateUTC = data.tripStartDateUTC;
+      this.tripEndDateUTC = data.tripEndDateUTC;
+      this.openWeekIds = data.openWeekIds;
+      this.openDayIds = data.openDayIds;
+      this.nowUTC = data.nowUTC; // Use consistent 'now' from load time
+
+      // Calculate progress after data is loaded
+      this.progressPercent = calculateProgress(
+        this.tripStartDateUTC,
+        this.tripEndDateUTC,
+        this.nowUTC
+      );
+      this.progressText = getProgressText(this.progressPercent);
+
+      // Update 'now' and progress periodically (e.g., every minute)
+      setInterval(() => {
+        this.nowUTC = Date.now();
+        this.progressPercent = calculateProgress(
+          this.tripStartDateUTC,
+          this.tripEndDateUTC,
+          this.nowUTC
+        );
+        this.progressText = getProgressText(this.progressPercent);
+      }, 60000); // Update every 60 seconds
+    },
+
+    // Methods to toggle sections
+    toggleWeek(weekId) {
+      if (this.openWeekIds.includes(weekId)) {
+        this.openWeekIds = this.openWeekIds.filter((id) => id !== weekId);
+      } else {
+        this.openWeekIds.push(weekId);
+      }
+    },
+    toggleDay(dayId) {
+      if (this.openDayIds.includes(dayId)) {
+        this.openDayIds = this.openDayIds.filter((id) => id !== dayId);
+      } else {
+        this.openDayIds.push(dayId);
+      }
+    },
+    isWeekOpen(weekId) {
+      return this.openWeekIds.includes(weekId);
+    },
+    isDayOpen(dayId) {
+      return this.openDayIds.includes(dayId);
+    },
+  }));
+});

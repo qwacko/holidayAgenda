@@ -369,8 +369,8 @@
       "type": "activity",
       "description": "Disney World Visit",
       "locationRef": "loc_disney_world",
-      "startDate": "2025-04-29",
-      "endDate": "2025-05-01",
+      "startDate": "2025-04-28",
+      "endDate": "2025-05-02",
       "tentative": true
     },
     {
@@ -481,6 +481,316 @@
       "details": "Auckland to Christchurch",
       "date": "2025-05-13",
       "time": "9:00 AM - 10:25 AM"
+    },
+    {
+      "id": "evt-new-001",
+      "type": "activity",
+      "description": "San Jose Sharks vs Calgary Flames (7:30pm)",
+      "locationRef": "loc_brisbane_hotel",
+      "date": "2025-04-07",
+      "url": "https://www.sapcenter.com/events/detail/flames-4-7"
+    },
+    {
+      "id": "evt-new-002",
+      "type": "activity",
+      "description": "WalMart / Food",
+      "locationRef": "loc_oakhurst_house",
+      "date": "2025-04-08"
+    },
+    {
+      "id": "evt-new-003",
+      "type": "activity",
+      "description": "San Jose Munipical Rose Garden (Free)",
+      "locationRef": "loc_oakhurst_house",
+      "date": "2025-04-08",
+      "url": "https://www.sanjose.org/attraction/municipal-rose-garden"
+    },
+    {
+      "id": "evt-new-004",
+      "type": "activity",
+      "description": "Lodi Lake (Walks / Lake)",
+      "locationRef": "loc_oakhurst_house",
+      "date": "2025-04-08"
+    },
+    {
+      "id": "evt-new-005",
+      "type": "activity",
+      "description": "Yosemite Park",
+      "locationRef": "loc_oakhurst_house",
+      "startDate": "2025-04-09",
+      "endDate": "2025-04-12"
+    },
+    {
+      "id": "evt-new-006",
+      "type": "activity",
+      "description": "Sugar Pine Railroad",
+      "locationRef": "loc_oakhurst_house",
+      "startDate": "2025-04-09",
+      "endDate": "2025-04-12",
+      "url": "https://www.yosemite.com/things-to-do/leisure-activities/yosemite-mountain-sugar-pine-railroad/?gad_source=1&gclid=Cj0KCQjw4v6-BhDuARIsALprm311FcL_n9z_dvFkfQZDY5G20BlUtLdA2k_qzC00sb7jbJKl1Eqb4MIaAgH9EALw_wcB",
+      "tentative": true
+    },
+    {
+      "id": "evt-new-007",
+      "type": "activity",
+      "description": "Ranger Talk",
+      "locationRef": "loc_oakhurst_house",
+      "startDate": "2025-04-09",
+      "endDate": "2025-04-12",
+      "url": "https://www.nps.gov/yose/planyourvisit/calendar.htm",
+      "tentative": true
+    },
+    {
+      "id": "evt-new-008",
+      "type": "activity",
+      "description": "Gem / Mineral Show",
+      "locationRef": "loc_oakhurst_house",
+      "startDate": "2025-04-09",
+      "endDate": "2025-04-12",
+      "url": "https://www.yosemite.com/event/mariposa-gem-and-mineral-show/",
+      "tentative": true
+    },
+    {
+      "id": "evt-new-009",
+      "type": "activity",
+      "description": "Stockton Creek Preserve Trail",
+      "locationRef": "loc_oakhurst_house",
+      "startDate": "2025-04-09",
+      "endDate": "2025-04-12",
+      "url": "https://www.yosemite.com/things-to-do/adventure-activities/stockton-creek-preserve-trail/",
+      "tentative": true
+    },
+    {
+      "id": "evt-new-010",
+      "type": "activity",
+      "description": "Mirror Lake",
+      "locationRef": "loc_oakhurst_house",
+      "startDate": "2025-04-09",
+      "endDate": "2025-04-12",
+      "url": "https://www.yosemite.com/mirror-lake-yosemites-ephemeral-reflection/",
+      "tentative": true
+    },
+    {
+      "id": "evt-new-011",
+      "type": "activity",
+      "description": "McHenry Mansion (Modesto)",
+      "locationRef": "loc_sf_staples",
+      "date": "2025-04-13",
+      "notes": "Free Tours 12:30 - 4pm",
+      "url": "https://www.mchenrymansion.org/",
+      "tentative": true
+    },
+    {
+      "id": "evt-new-012",
+      "type": "activity",
+      "description": "The Tech Interactive (San Jose)",
+      "locationRef": "loc_sf_staples",
+      "date": "2025-04-13",
+      "notes": "Possibility too big to do quickly",
+      "url": "https://www.thetech.org/explore/exhibits/",
+      "tentative": true
+    },
+    {
+      "id": "evt-new-013",
+      "type": "activity",
+      "description": "Castle Air Museum (Atwater)",
+      "locationRef": "loc_sf_staples",
+      "date": "2025-04-13",
+      "notes": "Possibly just drive past",
+      "url": "https://castleairmuseum.org/"
+    },
+    {
+      "id": "evt-new-014",
+      "type": "activity",
+      "description": "The Exploratorium",
+      "locationRef": "loc_sf_staples",
+      "startDate": "2025-04-14",
+      "endDate": "2025-04-15",
+      "url": "https://www.exploratorium.edu/visit",
+      "tentative": true
+    },
+    {
+      "id": "evt-new-015",
+      "type": "activity",
+      "description": "Bay Area Panthers vs .... (San Jose)",
+      "locationRef": "loc_sf_staples",
+      "date": "2025-04-13",
+      "notes": "13th @ 5pm",
+      "url": "https://www.sapcenter.com/events/detail/bay-area-panthers-2",
+      "tentative": true
+    },
+    {
+      "id": "evt-new-016",
+      "type": "activity",
+      "description": "Bike Hire (Golden Gate Bridge)",
+      "locationRef": "loc_sf_staples",
+      "startDate": "2025-04-14",
+      "endDate": "2025-04-15",
+      "url": "https://bikeandview.com/?gad_source=1&gclid=Cj0KCQjw4v6-BhDuARIsALprm3015ljIxDA2WeDGDPibSaMOq6RBj2GZ9lX27ZpZo9XBxhwJDVQW8T4aAhkVEALw_wcB",
+      "tentative": true
+    },
+    {
+      "id": "evt-new-017",
+      "type": "activity",
+      "description": "The Game Parlour",
+      "locationRef": "loc_sf_staples",
+      "startDate": "2025-04-14",
+      "endDate": "2025-04-15",
+      "url": "https://www.thegameparlour.com/menu",
+      "tentative": true
+    },
+    {
+      "id": "evt-new-018",
+      "type": "activity",
+      "description": "Ghiradelli Chocolate",
+      "locationRef": "loc_sf_staples",
+      "startDate": "2025-04-14",
+      "endDate": "2025-04-15",
+      "url": "https://www.ghirardelli.com/"
+    },
+    {
+      "id": "evt-new-019",
+      "type": "activity",
+      "description": "Seward Street Slides",
+      "locationRef": "loc_sf_staples",
+      "startDate": "2025-04-14",
+      "endDate": "2025-04-15",
+      "url": "https://www.atlasobscura.com/places/seward-street-slides",
+      "tentative": true
+    },
+    {
+      "id": "evt-new-020",
+      "type": "activity",
+      "description": "Pier + Wiggly Road etc...",
+      "locationRef": "loc_sf_staples",
+      "startDate": "2025-04-14",
+      "endDate": "2025-04-15",
+      "tentative": true
+    },
+    {
+      "id": "evt-new-021",
+      "type": "activity",
+      "description": "Water Taxi",
+      "locationRef": "loc_dania_beach_simple",
+      "date": "2025-04-18",
+      "url": "https://watertaxi.com/save/"
+    },
+    {
+      "id": "evt-new-022",
+      "type": "activity",
+      "description": "Get Food / Treats / Bottled Water For Cruise",
+      "locationRef": "loc_shopping_cruise",
+      "date": "2025-04-19"
+    },
+    {
+      "id": "evt-new-023",
+      "type": "activity",
+      "description": "Beach Nearby",
+      "locationRef": "loc_dania_beach_simple",
+      "startDate": "2025-04-17",
+      "endDate": "2025-04-19",
+      "tentative": true
+    },
+    {
+      "id": "evt-new-024",
+      "type": "activity",
+      "description": "Jaxsons Ice Cream",
+      "locationRef": "loc_dania_beach_simple",
+      "startDate": "2025-04-18",
+      "endDate": "2025-04-19",
+      "url": "https://www.jaxsonsicecream.com/",
+      "tentative": true
+    },
+    {
+      "id": "evt-new-025",
+      "type": "activity",
+      "description": "Swamp Boat Tour (Everglades)",
+      "locationRef": "loc_bw_fll",
+      "date": "2025-04-26",
+      "notes": "Possibly on the day we get off boat",
+      "url": "https://www.evergladesholidaypark.com/about/",
+      "tentative": true
+    },
+    {
+      "id": "evt-new-026",
+      "type": "activity",
+      "description": "Church Service?",
+      "locationRef": "loc_bw_fll",
+      "date": "2025-04-27",
+      "tentative": true
+    },
+    {
+      "id": "evt-new-027",
+      "type": "activity",
+      "description": "Crayola Experience",
+      "locationRef": "loc_orlando_area",
+      "startDate": "2025-04-27",
+      "endDate": "2025-05-03",
+      "tentative": true,
+      "url": "https://www.crayolaexperience.com/orlando/"
+    },
+    {
+      "id": "evt-new-028",
+      "type": "activity",
+      "description": "American Girl Doll Store",
+      "locationRef": "loc_orlando_area",
+      "startDate": "2025-04-27",
+      "endDate": "2025-05-03",
+      "tentative": true
+    },
+    {
+      "id": "evt-new-029",
+      "type": "activity",
+      "description": "Cape Canaveral",
+      "locationRef": "loc_orlando_area",
+      "startDate": "2025-04-27",
+      "endDate": "2025-05-03",
+      "url": "https://www.nasa.gov/centers/kennedy/home/index.html",
+      "tentative": true
+    },
+    {
+      "id": "evt-new-030",
+      "type": "activity",
+      "description": "Fun Spot America Theme Parks - Kissimmee",
+      "locationRef": "loc_orlando_area",
+      "startDate": "2025-04-27",
+      "endDate": "2025-05-03",
+      "notes": "2850 Florida Plaza Blvd, Kissimmee, FL 34746 (Simpler Roller Coasters)",
+      "url": "https://funspotamerica.com/orlando/",
+      "address": "2850 Florida Plaza Blvd, Kissimmee, FL 34746",
+      "tentative": true
+    },
+    {
+      "id": "evt-new-031",
+      "type": "activity",
+      "description": "Things at Resort",
+      "locationRef": "loc_davenport_house",
+      "startDate": "2025-04-27",
+      "endDate": "2025-05-03",
+      "tentative": true
+    },
+    {
+      "id": "evt-new-032",
+      "type": "activity",
+      "description": "Arranged by David / Paige",
+      "locationRef": "loc_dc_area",
+      "startDate": "2025-05-03",
+      "endDate": "2025-05-10"
+    },
+    {
+      "id": "evt-new-033",
+      "type": "activity",
+      "description": "Church Service?",
+      "locationRef": "loc_dc_area",
+      "date": "2025-05-04"
+    },
+    {
+      "id": "evt-new-034",
+      "type": "activity",
+      "description": "White House?",
+      "locationRef": "loc_dc_area",
+      "startDate": "2025-05-03",
+      "endDate": "2025-05-10"
     }
   ],
   "weeks": [

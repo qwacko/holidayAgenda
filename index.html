@@ -42,7 +42,11 @@
       <template x-if="!error && !loading && tripStartDateUTC && tripEndDateUTC">
         <div class="progress-container">
           <div class="progress-bar">
-            <div class="progress-fill" :style="{ width: progress + '%' }"></div>
+            <div
+              class="progress-fill"
+              :style="{ width: progressPercent + '%' }"
+            ></div>
+            <!-- Use progressPercent -->
           </div>
           <div class="progress-text" x-text="progressText">
             Loading trip progress...
@@ -51,173 +55,335 @@
       </template>
 
       <!-- Itinerary Content -->
-      <template x-if="!loading && !error" x-for="week in weeks" :key="week.id">
-        <div
-          class="week-container collapsible"
-          :class="{ 'expanded': isOpenWeek(week.id), 'collapsed': !isOpenWeek(week.id) }"
-        >
+      <template
+        x-if="!loading && !error"
+        x-for="week in Array.from(weeks).filter(week => week)"
+        :key="week.id"
+      >
+        <template x-if="week && week.id">
           <div
-            class="week-header collapsible-header"
-            @click="toggleWeek(week.id)"
+            class="week-container collapsible expanded"
+            :class="{ 'expanded': isWeekOpen(week.id), 'collapsed': !isWeekOpen(week.id) }"
           >
-            <span x-text="week.header"></span>
-            <!-- Indicator is now handled by ::before pseudo-element in CSS -->
-          </div>
-          <div class="collapsible-content">
-            <template x-for="day in week.days" :key="day.dateStr">
-              <div
-                class="day-container collapsible"
-                :class="{ 'expanded': isOpenDay(day.dateStr), 'collapsed': !isOpenDay(day.dateStr), 'today': day.dateStr === todayDateString }"
-              >
+            <div
+              class="week-header collapsible-header"
+              @click="toggleWeek(week.id)"
+            >
+              <span x-text="week.title"></span>
+              <!-- Indicator is now handled by ::before pseudo-element in CSS -->
+            </div>
+            <div class="collapsible-content">
+              <template x-for="day in week.days" :key="day.dateStr">
                 <div
-                  class="day-header collapsible-header"
-                  @click="toggleDay(day.dateStr)"
+                  class="day-container collapsible"
+                  :class="{ 'expanded': isDayOpen(day.dateStr), 'collapsed': !isDayOpen(day.dateStr), 'today': day.dateStr === todayDateString }"
                 >
-                  <span
-                    class="day-number"
-                    x-text="`Day ${day.dayNumber}`"
-                  ></span
-                  >: <span class="day-name" x-text="day.dayName"></span> -
-                  <strong class="day-title" x-text="day.title"></strong>
-                  <!-- Indicator is now handled by ::before pseudo-element in CSS -->
-                </div>
-                <div class="collapsible-content">
-                  <!-- Removed Accommodation/Cruise Status - now part of cards -->
+                  <div
+                    class="day-header collapsible-header"
+                    @click="toggleDay(day.dateStr)"
+                  >
+                    <span
+                      class="day-number"
+                      x-text="`Day ${day.dayNumber}`"
+                    ></span>
+                    : <span class="day-name" x-text="day.dayName"></span> -
+                    <strong class="day-title" x-text="day.title"></strong>
+                    <!-- Indicator is now handled by ::before pseudo-element in CSS -->
+                  </div>
+                  <div class="collapsible-content">
+                    <!-- Removed Accommodation/Cruise Status - now part of cards -->
 
-                  <!-- Event Cards -->
-                  <div class="event-cards-container">
-                    <template
-                      x-for="(item, index) in day.items"
-                      :key="item.id || index"
-                    >
-                      <div
-                        class="event-card"
-                        :class="{ 'tentative-card': item.tentative, 'generic-explore': item.isGenericExplore }"
-                        :data-event-type="item.eventType.replace('_', '-')"
+                    <!-- Event Cards Container -->
+                    <div class="event-cards-container">
+                      <!-- Confirmed Items -->
+                      <template
+                        x-for="(item, index) in day.confirmedItems"
+                        :key="item.id ? `confirmed-${item.id}` : `confirmed-${index}`"
                       >
-                        <!-- Card Tag/Icon Area -->
-                        <div class="card-tag">
-                          <span class="card-icon">
-                            <i :class="item.icon || 'fas fa-info-circle'"></i>
-                          </span>
-                        </div>
-
-                        <!-- Card Content Area -->
-                        <div class="card-content">
-                          <div class="card-header">
-                            <span
-                              class="card-description"
-                              x-text="item.displayDescription"
-                            ></span>
-                            <template x-if="item.time">
-                              <span class="card-time" x-text="item.time"></span>
-                            </template>
+                        <div
+                          class="event-card"
+                          :class="{ 'generic-explore': item.isGenericExplore }"
+                          :data-event-type="item.eventType.replace('_', '-')"
+                        >
+                          <!-- Card Tag/Icon Area -->
+                          <div class="card-tag">
+                            <span class="card-icon" x-html="item.icon"></span>
+                            <!-- Use x-html for emoji icons -->
                           </div>
 
-                          <div class="card-details">
-                            <!-- Location Name -->
-                            <template
-                              x-if="item.locationName && !item.isGenericExplore"
-                            >
-                              <div>
-                                <i
-                                  class="fas fa-map-marker-alt"
-                                  style="
-                                    width: 1.25em;
-                                    text-align: center;
-                                    margin-right: 3px;
-                                  "
-                                ></i>
+                          <!-- Card Content Area -->
+                          <div class="card-content">
+                            <div class="card-header">
+                              <span
+                                class="card-description"
+                                x-text="item.description || item.name"
+                              >
+                                ></span
+                              >
+                              <template x-if="item.time">
                                 <span
-                                  class="location-name"
-                                  x-text="item.locationName"
+                                  class="card-time"
+                                  x-text="item.time"
                                 ></span>
-                                <!-- Google Maps Link -->
-                                <template x-if="item.mapUrl">
-                                  <a
-                                    :href="item.mapUrl"
-                                    target="_blank"
-                                    class="map-link"
-                                    title="Open in Google Maps"
-                                  >
-                                    <i class="fas fa-external-link-alt"></i>Map
-                                  </a>
-                                </template>
-                              </div>
-                            </template>
+                              </template>
+                            </div>
 
-                            <!-- Formatted Location (Address/Details) -->
+                            <div class="card-details">
+                              <!-- Location Name -->
+                              <template
+                                x-if="item.locationName && !item.isGenericExplore"
+                              >
+                                <div>
+                                  <i
+                                    class="fas fa-map-marker-alt"
+                                    style="
+                                      width: 1.25em;
+                                      text-align: center;
+                                      margin-right: 3px;
+                                    "
+                                  ></i>
+                                  <span
+                                    class="location-name"
+                                    x-text="item.locationName"
+                                  ></span>
+                                  <!-- Google Maps Link -->
+                                  <template x-if="item.mapLink">
+                                    <!-- Use item.mapLink -->
+                                    <a
+                                      :href="item.mapLink"
+                                      target="_blank"
+                                      class="map-link"
+                                      title="Open in Google Maps"
+                                    >
+                                      <i class="fas fa-external-link-alt"></i
+                                      >Map
+                                    </a>
+                                  </template>
+                                </div>
+                              </template>
+
+                              <!-- Formatted Location (Address/Details) -->
+                              <template
+                                x-if="item.formattedLocation && item.locationName !== item.formattedLocation"
+                              >
+                                <div
+                                  class="location-details"
+                                  x-text="item.formattedLocation"
+                                ></div>
+                              </template>
+
+                              <!-- URL Link -->
+                              <template x-if="item.url">
+                                <div>
+                                  <i
+                                    class="fas fa-link"
+                                    style="
+                                      width: 1.25em;
+                                      text-align: center;
+                                      margin-right: 3px;
+                                    "
+                                  ></i>
+                                  <a
+                                    :href="item.url"
+                                    target="_blank"
+                                    class="url-link"
+                                    x-text="item.url.length > 50 ? item.url.substring(0, 50) + '...' : item.url"
+                                  ></a>
+                                </div>
+                              </template>
+
+                              <!-- Confirmation/Reference -->
+                              <template x-if="item.confirmation">
+                                <div>
+                                  <i
+                                    class="fas fa-check-circle"
+                                    style="
+                                      width: 1.25em;
+                                      text-align: center;
+                                      margin-right: 3px;
+                                    "
+                                  ></i>
+                                  Ref: <span x-text="item.confirmation"></span>
+                                </div>
+                              </template>
+
+                              <!-- Tentative Marker (Should not appear here, but kept for structure consistency if needed) -->
+                              <!-- <template x-if="item.tentative">
+                              <span class="tentative-marker">Tentative</span>
+                            </template> -->
+                            </div>
+
+                            <!-- Notes -->
+                            <template x-if="item.notes">
+                              <p class="notes" x-text="item.notes"></p>
+                            </template>
+                          </div>
+                        </div>
+                      </template>
+
+                      <!-- Tentative Items Expander -->
+                      <template x-if="day.hasTentativeItems">
+                        <details class="tentative-details">
+                          <summary class="tentative-summary">
+                            Show
+                            <span x-text="day.tentativeItemCount"></span>
+                            tentative item<span
+                              x-show="day.tentativeItemCount !== 1"
+                              >s</span
+                            >...
+                          </summary>
+                          <div class="tentative-items-container">
                             <template
-                              x-if="item.formattedLocation && item.locationName !== item.formattedLocation"
+                              x-for="(item, index) in day.tentativeItems"
+                              :key="item.id ? `tentative-${item.id}` : `tentative-${index}`"
                             >
                               <div
-                                class="location-details"
-                                x-text="item.formattedLocation"
-                              ></div>
-                            </template>
+                                class="event-card tentative-card"
+                                :class="{ 'generic-explore': item.isGenericExplore }"
+                                :data-event-type="item.eventType.replace('_', '-')"
+                              >
+                                <!-- Card Tag/Icon Area -->
+                                <div class="card-tag">
+                                  <span
+                                    class="card-icon"
+                                    x-html="item.icon"
+                                  ></span>
+                                  <!-- Use x-html for emoji icons -->
+                                </div>
 
-                            <!-- URL Link -->
-                            <template x-if="item.url">
-                              <div>
-                                <i
-                                  class="fas fa-link"
-                                  style="
-                                    width: 1.25em;
-                                    text-align: center;
-                                    margin-right: 3px;
-                                  "
-                                ></i>
-                                <a
-                                  :href="item.url"
-                                  target="_blank"
-                                  class="url-link"
-                                  x-text="item.url.length > 50 ? item.url.substring(0, 50) + '...' : item.url"
-                                ></a>
+                                <!-- Card Content Area -->
+                                <div class="card-content">
+                                  <div class="card-header">
+                                    <span
+                                      class="card-description"
+                                      x-text="item.description"
+                                    ></span>
+                                    <template x-if="item.time">
+                                      <span
+                                        class="card-time"
+                                        x-text="item.time"
+                                      ></span>
+                                    </template>
+                                  </div>
+
+                                  <div class="card-details">
+                                    <!-- Location Name -->
+                                    <template
+                                      x-if="item.locationName && !item.isGenericExplore"
+                                    >
+                                      <div>
+                                        <i
+                                          class="fas fa-map-marker-alt"
+                                          style="
+                                            width: 1.25em;
+                                            text-align: center;
+                                            margin-right: 3px;
+                                          "
+                                        ></i>
+                                        <span
+                                          class="location-name"
+                                          x-text="item.locationName"
+                                        ></span>
+                                        <!-- Google Maps Link -->
+                                        <template x-if="item.mapLink">
+                                          <a
+                                            :href="item.mapLink"
+                                            target="_blank"
+                                            class="map-link"
+                                            title="Open in Google Maps"
+                                          >
+                                            <i
+                                              class="fas fa-external-link-alt"
+                                            ></i
+                                            >Map
+                                          </a>
+                                        </template>
+                                      </div>
+                                    </template>
+
+                                    <!-- Formatted Location (Address/Details) -->
+                                    <template
+                                      x-if="item.formattedLocation && item.locationName !== item.formattedLocation"
+                                    >
+                                      <div
+                                        class="location-details"
+                                        x-text="item.formattedLocation"
+                                      ></div>
+                                    </template>
+
+                                    <!-- URL Link -->
+                                    <template x-if="item.url">
+                                      <div>
+                                        <i
+                                          class="fas fa-link"
+                                          style="
+                                            width: 1.25em;
+                                            text-align: center;
+                                            margin-right: 3px;
+                                          "
+                                        ></i>
+                                        <a
+                                          :href="item.url"
+                                          target="_blank"
+                                          class="url-link"
+                                          x-text="item.url.length > 50 ? item.url.substring(0, 50) + '...' : item.url"
+                                        ></a>
+                                      </div>
+                                    </template>
+
+                                    <!-- Confirmation/Reference -->
+                                    <template x-if="item.confirmation">
+                                      <div>
+                                        <i
+                                          class="fas fa-check-circle"
+                                          style="
+                                            width: 1.25em;
+                                            text-align: center;
+                                            margin-right: 3px;
+                                          "
+                                        ></i>
+                                        Ref:
+                                        <span x-text="item.confirmation"></span>
+                                      </div>
+                                    </template>
+
+                                    <!-- Tentative Marker -->
+                                    <template x-if="item.tentative">
+                                      <span class="tentative-marker"
+                                        >Tentative</span
+                                      >
+                                    </template>
+                                  </div>
+
+                                  <!-- Notes -->
+                                  <template x-if="item.notes">
+                                    <p class="notes" x-text="item.notes"></p>
+                                  </template>
+                                </div>
                               </div>
-                            </template>
-
-                            <!-- Confirmation/Reference -->
-                            <template x-if="item.confirmation">
-                              <div>
-                                <i
-                                  class="fas fa-check-circle"
-                                  style="
-                                    width: 1.25em;
-                                    text-align: center;
-                                    margin-right: 3px;
-                                  "
-                                ></i>
-                                Ref: <span x-text="item.confirmation"></span>
-                              </div>
-                            </template>
-
-                            <!-- Tentative Marker -->
-                            <template x-if="item.tentative">
-                              <span class="tentative-marker">Tentative</span>
                             </template>
                           </div>
+                        </details>
+                      </template>
 
-                          <!-- Notes -->
-                          <template x-if="item.notes">
-                            <p class="notes" x-text="item.notes"></p>
-                          </template>
-                        </div>
-                      </div>
-                    </template>
-                    <template x-if="day.items.length === 0">
-                      <div
-                        class="no-events"
-                        style="padding: 10px; color: #888; font-style: italic"
+                      <!-- No Events Message -->
+                      <template
+                        x-if="day.confirmedItems.length === 0 && day.tentativeItems.length === 0"
                       >
-                        No scheduled events.
-                      </div>
-                    </template>
+                        <div
+                          class="no-events"
+                          style="padding: 10px; color: #888; font-style: italic"
+                        >
+                          No scheduled events.
+                        </div>
+                      </template>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </template>
+              </template>
+            </div>
           </div>
-        </div>
+        </template>
       </template>
     </main>
 
@@ -225,107 +391,6 @@
       <p>&copy; 2025 Family Name</p>
     </footer>
 
-    <script>
-      document.addEventListener("alpine:init", () => {
-        Alpine.data("tripAgenda", () => ({
-          tripTitle: "Loading Trip...",
-          tripDates: "Loading Dates...",
-          tripStartDateUTC: null,
-          tripEndDateUTC: null,
-          weeks: [],
-          locations: {},
-          loading: true,
-          error: null,
-          todayDateString: formatDate(new Date()), // Set initial value
-          openWeekIds: [], // Store IDs of open weeks
-          openDayIds: [], // Store date strings of open days
-          nowUTC: Date.now(), // For progress calculation
-          progressInterval: null, // To update progress periodically
-
-          // --- Computed Properties ---
-          get progress() {
-            return calculateProgress(
-              this.tripStartDateUTC,
-              this.tripEndDateUTC,
-              this.nowUTC
-            );
-          },
-          get progressText() {
-            return getProgressText(this.progress);
-          },
-
-          // --- Methods ---
-          async init() {
-            console.log("Alpine init: Loading trip data...");
-            const data = await loadTripData();
-            console.log("Alpine init: Data loaded", data);
-            this.tripTitle = data.tripTitle;
-            this.tripDates = data.tripDates;
-            this.tripStartDateUTC = data.tripStartDateUTC;
-            this.tripEndDateUTC = data.tripEndDateUTC;
-            this.weeks = data.weeks;
-            this.locations = data.locations;
-            this.error = data.error;
-            this.loading = false;
-            this.todayDateString = data.todayDateString; // Update with value from loadTripData if needed
-            // Initialize open states (start all open)
-            this.openWeekIds = this.weeks.map((w) => w.id);
-            this.openDayIds = this.weeks.flatMap((w) =>
-              w.days.map((d) => d.dateStr)
-            );
-
-            // Update progress periodically
-            this.updateProgressTime(); // Initial update
-            this.progressInterval = setInterval(() => {
-              this.updateProgressTime();
-            }, 60000); // Update every minute
-
-            // Set document title
-            if (!this.error) {
-              document.title = this.tripTitle;
-            } else {
-              document.title = "Error Loading Trip";
-            }
-          },
-
-          updateProgressTime() {
-            this.nowUTC = Date.now();
-          },
-
-          // Toggle week visibility
-          toggleWeek(weekId) {
-            const index = this.openWeekIds.indexOf(weekId);
-            if (index > -1) {
-              this.openWeekIds.splice(index, 1); // Close it
-            } else {
-              this.openWeekIds.push(weekId); // Open it
-            }
-          },
-          isOpenWeek(weekId) {
-            return this.openWeekIds.includes(weekId);
-          },
-
-          // Toggle day visibility
-          toggleDay(dayDateStr) {
-            const index = this.openDayIds.indexOf(dayDateStr);
-            if (index > -1) {
-              this.openDayIds.splice(index, 1); // Close it
-            } else {
-              this.openDayIds.push(dayDateStr); // Open it
-            }
-          },
-          isOpenDay(dayDateStr) {
-            return this.openDayIds.includes(dayDateStr);
-          },
-
-          // Cleanup interval on component destruction (though unlikely for body)
-          destroy() {
-            if (this.progressInterval) {
-              clearInterval(this.progressInterval);
-            }
-          },
-        }));
-      });
-    </script>
+    <!-- Removed redundant Alpine.data block -->
   </body>
 </html>
