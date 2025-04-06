@@ -76,6 +76,36 @@ footer {
 .day-date {
   color: #666;
 }
+/* --- Day Title Styles --- */
+.day-title {
+  font-weight: normal; /* Less emphasis than day name/number */
+  color: #555;
+  text-align: center; /* Center the title */
+  flex-grow: 1; /* Allow it to take up space between name and number */
+  margin: 0 10px; /* Add some spacing */
+}
+
+/* --- Accommodation Stay Indicator Styles --- */
+.accommodation-stay-indicator {
+  background-color: #e8f5e9; /* Match accommodation event color */
+  border: 1px solid #c8e6c9;
+  border-left: 4px solid #4caf50; /* Match accommodation event border */
+  padding: 8px 12px;
+  margin: 5px 0 15px 0; /* Add margin below */
+  border-radius: 4px;
+  font-size: 0.9em;
+  color: #388e3c; /* Darker green text */
+}
+
+.accommodation-stay-indicator span {
+  font-weight: bold;
+}
+
+/* Adjust day header for title */
+.day-header {
+  /* Existing styles: display: flex, justify-content: space-between, align-items: center */
+  /* Ensure items align well with the new title */
+}
 
 .current-day {
   background-color: #fffde7;
@@ -101,7 +131,9 @@ footer {
   border-left: 4px solid #2196f3;
 }
 
-.accommodation-event {
+.accommodation-event,
+.accommodation-check-in-event,
+.accommodation-check-out-event {
   background-color: #e8f5e9;
   border-left: 4px solid #4caf50;
 }
@@ -232,6 +264,29 @@ footer {
   margin-bottom: 0; /* Remove margin below header when day is collapsed */
 }
 
+/* --- Tentative Event Styles --- */
+
+.tentative-event {
+  opacity: 0.75; /* Make tentative events slightly faded */
+  font-style: italic; /* Italicize text */
+  background-color: #fafafa; /* Slightly different background */
+  border-left-style: dashed; /* Use dashed border */
+}
+
+/* Style for the (Tentative) marker added by JS */
+.tentative-marker {
+  font-size: 0.8em;
+  color: #888;
+  margin-left: 5px;
+  font-style: normal; /* Keep marker non-italic */
+}
+
+/* Override specific event type backgrounds if needed for tentative */
+.tentative-event.activity-event {
+  background-color: #f9f3fa; /* Lighter purple */
+}
+/* Add overrides for other event types if desired */
+
 .progress-text {
   text-align: center;
   margin-top: 5px;
@@ -245,7 +300,15 @@ footer {
   }
 
   .day-header {
-    flex-direction: column;
-    align-items: flex-start;
+    /* Existing: flex-direction: column, align-items: flex-start; */
+  }
+  .day-title {
+    text-align: left; /* Align left on small screens */
+    margin: 5px 0; /* Adjust margin */
+    flex-grow: 0; /* Don't grow */
+    order: 1; /* Place title below day name */
+  }
+  .day-date {
+    order: 2; /* Place day number after title */
   }
 }

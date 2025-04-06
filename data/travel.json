@@ -91,794 +91,390 @@
       "name": "San Bruno",
       "address": "190 El Camino Real, San Bruno, CA 94066"
     },
-    "loc_pacific_ocean": { "name": "Over the Pacific Ocean" }
+    "loc_pacific_ocean": { "name": "Over the Pacific Ocean" },
+    "loc_disney_world": {
+      "name": "Walt Disney World",
+      "details": "Theme Park Complex"
+    }
   },
-  "accommodations": {
-    "acc_homewood_brisbane": {
+  "accommodations": [
+    {
+      "id": "acc_homewood_brisbane",
       "name": "Homewood Suites by Hilton San Francisco Airport-North",
-      "locationRef": "loc_brisbane_hotel"
+      "locationRef": "loc_brisbane_hotel",
+      "startDate": "2025-04-07",
+      "endDate": "2025-04-08"
     },
-    "acc_little_house_oakhurst": {
+    {
+      "id": "acc_little_house_oakhurst",
       "name": "\"The Little House in the Big Woods\"",
-      "locationRef": "loc_oakhurst_house"
+      "locationRef": "loc_oakhurst_house",
+      "startDate": "2025-04-08",
+      "endDate": "2025-04-13"
     },
-    "acc_cozy_sf": {
+    {
+      "id": "acc_cozy_sf",
       "name": "\"Cozy 2 BR Apt. In The Sunnyside\"",
-      "locationRef": "loc_sf_staples"
+      "locationRef": "loc_sf_staples",
+      "startDate": "2025-04-13",
+      "endDate": "2025-04-16"
     },
-    "acc_beautiful_dania": {
+    {
+      "id": "acc_beautiful_dania",
       "name": "\"Beautiful 2-Bedroom Rental Unit near the Beach\"",
-      "locationRef": "loc_dania_beach_apt"
+      "locationRef": "loc_dania_beach_apt",
+      "startDate": "2025-04-16",
+      "endDate": "2025-04-20"
     },
-    "acc_bw_fll": {
+    {
+      "id": "acc_bw_fll",
       "name": "Best Western Ft. Lauderdale I-95 Inn",
-      "locationRef": "loc_bw_fll"
+      "locationRef": "loc_bw_fll",
+      "startDate": "2025-04-26",
+      "endDate": "2025-04-27"
     },
-    "acc_ken_tanya_davenport": {
+    {
+      "id": "acc_ken_tanya_davenport",
       "name": "\"Ken & Tanya's Tropical Retreat\"",
-      "locationRef": "loc_davenport_house"
+      "locationRef": "loc_davenport_house",
+      "startDate": "2025-04-27",
+      "endDate": "2025-05-03"
     },
-    "acc_cozy_falls_church": {
+    {
+      "id": "acc_cozy_falls_church",
       "name": "\"Cozy Modern Single Family 5 Bedroom Home\"",
-      "locationRef": "loc_falls_church_house"
+      "locationRef": "loc_falls_church_house",
+      "startDate": "2025-05-03",
+      "endDate": "2025-05-10"
     },
-    "acc_aura_san_bruno": {
+    {
+      "id": "acc_aura_san_bruno",
       "name": "Hotel Aura",
-      "locationRef": "loc_san_bruno_hotel"
+      "locationRef": "loc_san_bruno_hotel",
+      "startDate": "2025-05-10",
+      "endDate": "2025-05-11"
     }
-  },
-  "events": {
-    "evt_001": {
-      "dayRef": "day-2025-04-07",
-      "type": "flight-event",
-      "time": "2:00 PM - 3:25 PM",
+  ],
+  "cruises": [
+    {
+      "id": "cruise_freedom_seas",
+      "shipName": "Royal Caribbean Freedom of the Seas",
+      "startDate": "2025-04-20",
+      "endDate": "2025-04-26",
+      "departurePortRef": "loc_fll_port",
+      "arrivalPortRef": "loc_fll_port",
+      "portCalls": [
+        {
+          "date": "2025-04-21",
+          "locationRef": "loc_nassau",
+          "startTime": "7:30 AM",
+          "endTime": "3:30 PM"
+        },
+        {
+          "date": "2025-04-23",
+          "locationRef": "loc_falmouth",
+          "startTime": "7:30 AM",
+          "endTime": "3:30 PM"
+        },
+        {
+          "date": "2025-04-24",
+          "locationRef": "loc_labadee",
+          "startTime": "10:00 AM",
+          "endTime": "5:30 PM"
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "evt-001",
+      "type": "flight",
       "description": "Flight: Air New Zealand NZ 550",
-      "details": "Christchurch to Auckland"
-    },
-    "evt_002": {
-      "dayRef": "day-2025-04-07",
-      "type": "flight-event",
-      "time": "7:45 PM - 12:50 PM (next day)",
-      "description": "Flight: Air New Zealand NZ 8",
-      "details": "Auckland to San Francisco"
-    },
-    "evt_003": {
-      "dayRef": "day-2025-04-07",
-      "type": "car-rental-event",
-      "time": "1:30 PM",
-      "description": "Car Rental Pickup: Hertz",
-      "locationRef": "loc_sfo_airport"
-    },
-    "evt_004": {
-      "dayRef": "day-2025-04-07",
-      "type": "accommodation-event",
-      "time": "Check-in",
-      "accommodationRef": "acc_homewood_brisbane"
-    },
-    "evt_005": {
-      "dayRef": "day-2025-04-08",
-      "type": "accommodation-event",
-      "time": "Check-out",
-      "accommodationRef": "acc_homewood_brisbane"
-    },
-    "evt_006": {
-      "dayRef": "day-2025-04-08",
-      "type": "accommodation-event",
-      "time": "Check-in",
-      "accommodationRef": "acc_little_house_oakhurst"
-    },
-    "evt_007": {
-      "dayRef": "day-2025-04-09",
-      "type": "activity-event",
-      "description": "Fresno",
-      "locationRef": "loc_fresno_area"
-    },
-    "evt_008": {
-      "dayRef": "day-2025-04-10",
-      "type": "activity-event",
-      "description": "Fresno",
-      "locationRef": "loc_fresno_area"
-    },
-    "evt_009": {
-      "dayRef": "day-2025-04-11",
-      "type": "activity-event",
-      "description": "Fresno",
-      "locationRef": "loc_fresno_area"
-    },
-    "evt_010": {
-      "dayRef": "day-2025-04-11",
-      "type": "activity-event",
-      "time": "Morning",
-      "description": "Shopping",
-      "locationRef": "loc_river_park"
-    },
-    "evt_011": {
-      "dayRef": "day-2025-04-11",
-      "type": "activity-event",
-      "time": "Afternoon",
-      "description": "Gardens",
-      "locationRef": "loc_shinzen_garden"
-    },
-    "evt_012": {
-      "dayRef": "day-2025-04-11",
-      "type": "activity-event",
-      "time": "Late Afternoon",
-      "description": "Park Visit",
-      "locationRef": "loc_oso_de_oro_park"
-    },
-    "evt_013": {
-      "dayRef": "day-2025-04-12",
-      "type": "activity-event",
-      "description": "Silvermoon Race",
-      "locationRef": "loc_fresno_area"
-    },
-    "evt_014": {
-      "dayRef": "day-2025-04-13",
-      "type": "accommodation-event",
-      "time": "Check-out",
-      "accommodationRef": "acc_little_house_oakhurst"
-    },
-    "evt_015": {
-      "dayRef": "day-2025-04-13",
-      "type": "accommodation-event",
-      "time": "Check-in",
-      "accommodationRef": "acc_cozy_sf"
-    },
-    "evt_016": {
-      "dayRef": "day-2025-04-14",
-      "type": "activity-event",
-      "description": "San Francisco",
-      "locationRef": "loc_sf_staples"
-    },
-    "evt_017": {
-      "dayRef": "day-2025-04-15",
-      "type": "activity-event",
-      "description": "San Francisco",
-      "locationRef": "loc_sf_staples"
-    },
-    "evt_018": {
-      "dayRef": "day-2025-04-16",
-      "type": "car-rental-event",
-      "time": "11:00 AM",
-      "description": "Car Rental Drop-off: Hertz",
-      "locationRef": "loc_sfo_airport"
-    },
-    "evt_019": {
-      "dayRef": "day-2025-04-16",
-      "type": "flight-event",
-      "time": "1:54 PM - 9:50 PM",
-      "description": "Flight: American Airlines AA 2651",
-      "details": "San Francisco to Charlotte"
-    },
-    "evt_020": {
-      "dayRef": "day-2025-04-16",
-      "type": "flight-event",
-      "time": "10:20 PM - 12:15 AM (next day)",
-      "description": "Flight: American Airlines AA 2956",
-      "details": "Charlotte to Fort Lauderdale"
-    },
-    "evt_021": {
-      "dayRef": "day-2025-04-16",
-      "type": "accommodation-event",
-      "time": "Check-out",
-      "accommodationRef": "acc_cozy_sf"
-    },
-    "evt_022": {
-      "dayRef": "day-2025-04-16",
-      "type": "accommodation-event",
-      "time": "Check-in",
-      "accommodationRef": "acc_beautiful_dania"
-    },
-    "evt_023": {
-      "dayRef": "day-2025-04-17",
-      "type": "activity-event",
-      "description": "Fort Lauderdale",
-      "locationRef": "loc_dania_beach_simple"
-    },
-    "evt_024": {
-      "dayRef": "day-2025-04-18",
-      "type": "activity-event",
-      "description": "Fort Lauderdale",
-      "locationRef": "loc_dania_beach_simple"
-    },
-    "evt_025": {
-      "dayRef": "day-2025-04-19",
-      "type": "activity-event",
-      "description": "Fort Lauderdale",
-      "locationRef": "loc_dania_beach_simple"
-    },
-    "evt_026": {
-      "dayRef": "day-2025-04-19",
-      "type": "activity-event",
-      "time": "Shopping",
-      "description": "Get things to take onto cruise",
-      "locationRef": "loc_shopping_cruise"
-    },
-    "evt_027": {
-      "dayRef": "day-2025-04-20",
-      "type": "cruise-event",
-      "time": "3:30 PM",
-      "description": "Cruise Departure: Royal Caribbean Freedom of the Seas",
-      "locationRef": "loc_fll_port"
-    },
-    "evt_028": {
-      "dayRef": "day-2025-04-20",
-      "type": "accommodation-event",
-      "time": "Check-out",
-      "accommodationRef": "acc_beautiful_dania"
-    },
-    "evt_029": {
-      "dayRef": "day-2025-04-21",
-      "type": "cruise-event",
-      "time": "7:30 AM - 3:30 PM",
-      "description": "Cruise: Nassau",
-      "locationRef": "loc_nassau"
-    },
-    "evt_030": {
-      "dayRef": "day-2025-04-22",
-      "type": "cruise-event",
-      "time": "All Day",
-      "description": "Cruise: Sea Day",
-      "locationRef": "loc_caribbean_sea"
-    },
-    "evt_031": {
-      "dayRef": "day-2025-04-23",
-      "type": "cruise-event",
-      "time": "7:30 AM - 3:30 PM",
-      "description": "Cruise: Falmouth",
-      "locationRef": "loc_falmouth"
-    },
-    "evt_032": {
-      "dayRef": "day-2025-04-24",
-      "type": "cruise-event",
-      "time": "10:00 AM - 5:30 PM",
-      "description": "Cruise: Labadee",
-      "locationRef": "loc_labadee"
-    },
-    "evt_033": {
-      "dayRef": "day-2025-04-25",
-      "type": "cruise-event",
-      "time": "All Day",
-      "description": "Cruise: Sea Day",
-      "locationRef": "loc_caribbean_sea"
-    },
-    "evt_034": {
-      "dayRef": "day-2025-04-26",
-      "type": "cruise-event",
-      "time": "6:30 AM",
-      "description": "Cruise Arrival",
-      "locationRef": "loc_fll_port"
-    },
-    "evt_035": {
-      "dayRef": "day-2025-04-26",
-      "type": "car-rental-event",
-      "time": "9:00 AM",
-      "description": "Car Rental Pickup: Budget",
-      "locationRef": "loc_budget_fll"
-    },
-    "evt_036": {
-      "dayRef": "day-2025-04-26",
-      "type": "accommodation-event",
-      "time": "Check-in",
-      "accommodationRef": "acc_bw_fll"
-    },
-    "evt_037": {
-      "dayRef": "day-2025-04-26",
-      "type": "activity-event",
-      "time": "Afternoon",
-      "description": "FC Dallas vs Inter Miami FC",
-      "locationRef": "loc_chase_stadium"
-    },
-    "evt_038": {
-      "dayRef": "day-2025-04-27",
-      "type": "accommodation-event",
-      "time": "Check-out",
-      "accommodationRef": "acc_bw_fll"
-    },
-    "evt_039": {
-      "dayRef": "day-2025-04-27",
-      "type": "accommodation-event",
-      "time": "Check-in",
-      "accommodationRef": "acc_ken_tanya_davenport"
-    },
-    "evt_040": {
-      "dayRef": "day-2025-04-28",
-      "type": "activity-event",
-      "description": "Orlando",
-      "locationRef": "loc_orlando_area"
-    },
-    "evt_041": {
-      "dayRef": "day-2025-04-29",
-      "type": "activity-event",
-      "description": "Orlando",
-      "locationRef": "loc_orlando_area"
-    },
-    "evt_042": {
-      "dayRef": "day-2025-04-30",
-      "type": "activity-event",
-      "description": "Orlando",
-      "locationRef": "loc_orlando_area"
-    },
-    "evt_043": {
-      "dayRef": "day-2025-05-01",
-      "type": "activity-event",
-      "description": "Orlando",
-      "locationRef": "loc_orlando_area"
-    },
-    "evt_044": {
-      "dayRef": "day-2025-05-02",
-      "type": "activity-event",
-      "description": "Orlando",
-      "locationRef": "loc_orlando_area"
-    },
-    "evt_045": {
-      "dayRef": "day-2025-05-03",
-      "type": "car-rental-event",
-      "time": "2:00 PM",
-      "description": "Car Rental Drop-off: Budget",
-      "locationRef": "loc_mco_airport"
-    },
-    "evt_046": {
-      "dayRef": "day-2025-05-03",
-      "type": "flight-event",
-      "time": "3:12 PM - 5:31 PM",
-      "description": "Flight: American Airlines AA 1153",
-      "details": "Orlando to Washington, D.C."
-    },
-    "evt_047": {
-      "dayRef": "day-2025-05-03",
-      "type": "car-rental-event",
-      "time": "5:00 PM",
-      "description": "Car Rental Pickup: Hertz",
-      "locationRef": "loc_dca_airport"
-    },
-    "evt_048": {
-      "dayRef": "day-2025-05-03",
-      "type": "accommodation-event",
-      "time": "Check-out",
-      "accommodationRef": "acc_ken_tanya_davenport"
-    },
-    "evt_049": {
-      "dayRef": "day-2025-05-03",
-      "type": "accommodation-event",
-      "time": "Check-in",
-      "accommodationRef": "acc_cozy_falls_church"
-    },
-    "evt_050": {
-      "dayRef": "day-2025-05-04",
-      "type": "activity-event",
-      "description": "Washington DC",
-      "locationRef": "loc_dc_area"
-    },
-    "evt_051": {
-      "dayRef": "day-2025-05-05",
-      "type": "activity-event",
-      "description": "Washington DC",
-      "locationRef": "loc_dc_area"
-    },
-    "evt_052": {
-      "dayRef": "day-2025-05-05",
-      "type": "activity-event",
-      "time": "Morning/Afternoon",
-      "description": "Visit US Capitol",
-      "locationRef": "loc_us_capitol"
-    },
-    "evt_053": {
-      "dayRef": "day-2025-05-06",
-      "type": "activity-event",
-      "description": "Washington DC",
-      "locationRef": "loc_dc_area"
-    },
-    "evt_054": {
-      "dayRef": "day-2025-05-07",
-      "type": "activity-event",
-      "description": "Washington DC",
-      "locationRef": "loc_dc_area"
-    },
-    "evt_055": {
-      "dayRef": "day-2025-05-08",
-      "type": "activity-event",
-      "description": "Washington DC",
-      "locationRef": "loc_dc_area"
-    },
-    "evt_056": {
-      "dayRef": "day-2025-05-09",
-      "type": "activity-event",
-      "description": "Washington DC",
-      "locationRef": "loc_dc_area"
-    },
-    "evt_057": {
-      "dayRef": "day-2025-05-10",
-      "type": "car-rental-event",
-      "time": "3:00 PM",
-      "description": "Car Rental Drop-off: Hertz",
-      "locationRef": "loc_iad_airport"
-    },
-    "evt_058": {
-      "dayRef": "day-2025-05-10",
-      "type": "flight-event",
-      "time": "4:10 PM - 7:15 PM",
-      "description": "Flight: United Airlines UA 2142",
-      "details": "Washington, D.C. to San Francisco"
-    },
-    "evt_059": {
-      "dayRef": "day-2025-05-10",
-      "type": "accommodation-event",
-      "time": "Check-out",
-      "accommodationRef": "acc_cozy_falls_church"
-    },
-    "evt_060": {
-      "dayRef": "day-2025-05-10",
-      "type": "accommodation-event",
-      "time": "Check-in",
-      "accommodationRef": "acc_aura_san_bruno"
-    },
-    "evt_061": {
-      "dayRef": "day-2025-05-11",
-      "type": "flight-event",
-      "time": "10:05 PM - 6:00 AM (May 13)",
-      "description": "Flight: Air New Zealand NZ 7",
-      "details": "San Francisco to Auckland"
-    },
-    "evt_062": {
-      "dayRef": "day-2025-05-11",
-      "type": "accommodation-event",
-      "time": "Check-out",
-      "accommodationRef": "acc_aura_san_bruno"
-    },
-    "evt_063": {
-      "dayRef": "day-2025-05-12",
-      "type": "flight-event",
-      "time": "In Flight",
-      "description": "Flying Home",
-      "locationRef": "loc_pacific_ocean"
-    },
-    "evt_064": {
-      "dayRef": "day-2025-05-13",
-      "type": "flight-event",
-      "time": "6:00 AM",
-      "description": "Arrival in Auckland",
-      "locationRef": "loc_akl"
-    },
-    "evt_065": {
-      "dayRef": "day-2025-05-13",
-      "type": "flight-event",
-      "time": "9:00 AM - 10:25 AM",
-      "description": "Flight: Air New Zealand NZ 527",
-      "details": "Auckland to Christchurch"
-    }
-  },
-  "days": {
-    "day-2025-04-07": {
-      "weekRef": "week1",
+      "details": "Christchurch to Auckland",
       "date": "2025-04-07",
-      "dayName": "Monday, April 7",
-      "dayNumber": 1,
-      "eventRefs": ["evt_001", "evt_002", "evt_003", "evt_004"]
+      "time": "2:00 PM - 3:25 PM"
     },
-    "day-2025-04-08": {
-      "weekRef": "week1",
-      "date": "2025-04-08",
-      "dayName": "Tuesday, April 8",
-      "dayNumber": 2,
-      "eventRefs": ["evt_005", "evt_006"]
+    {
+      "id": "evt-002",
+      "type": "flight",
+      "description": "Flight: Air New Zealand NZ 8",
+      "details": "Auckland to San Francisco",
+      "date": "2025-04-07",
+      "time": "7:45 PM - 12:50 PM (next day)"
     },
-    "day-2025-04-09": {
-      "weekRef": "week1",
-      "date": "2025-04-09",
-      "dayName": "Wednesday, April 9",
-      "dayNumber": 3,
-      "eventRefs": ["evt_007"]
+    {
+      "id": "evt-003",
+      "type": "car-rental",
+      "description": "Car Rental Pickup: Hertz",
+      "locationRef": "loc_sfo_airport",
+      "date": "2025-04-07",
+      "time": "1:30 PM"
     },
-    "day-2025-04-10": {
-      "weekRef": "week1",
-      "date": "2025-04-10",
-      "dayName": "Thursday, April 10",
-      "dayNumber": 4,
-      "eventRefs": ["evt_008"]
+    {
+      "id": "evt-004",
+      "type": "activity",
+      "description": "Explore Fresno Area",
+      "locationRef": "loc_fresno_area",
+      "startDate": "2025-04-09",
+      "endDate": "2025-04-11"
     },
-    "day-2025-04-11": {
-      "weekRef": "week1",
+    {
+      "id": "evt-005",
+      "type": "activity",
+      "description": "Shopping",
+      "locationRef": "loc_river_park",
       "date": "2025-04-11",
-      "dayName": "Friday, April 11",
-      "dayNumber": 5,
-      "eventRefs": ["evt_009", "evt_010", "evt_011", "evt_012"]
+      "time": "Morning"
     },
-    "day-2025-04-12": {
-      "weekRef": "week1",
-      "date": "2025-04-12",
-      "dayName": "Saturday, April 12",
-      "dayNumber": 6,
-      "eventRefs": ["evt_013"]
+    {
+      "id": "evt-006",
+      "type": "activity",
+      "description": "Gardens",
+      "locationRef": "loc_shinzen_garden",
+      "date": "2025-04-11",
+      "time": "Afternoon"
     },
-    "day-2025-04-13": {
-      "weekRef": "week1",
-      "date": "2025-04-13",
-      "dayName": "Sunday, April 13",
-      "dayNumber": 7,
-      "eventRefs": ["evt_014", "evt_015"]
+    {
+      "id": "evt-007",
+      "type": "activity",
+      "description": "Park Visit",
+      "locationRef": "loc_oso_de_oro_park",
+      "date": "2025-04-11",
+      "time": "Late Afternoon"
     },
-    "day-2025-04-14": {
-      "weekRef": "week2",
-      "date": "2025-04-14",
-      "dayName": "Monday, April 14",
-      "dayNumber": 8,
-      "eventRefs": ["evt_016"]
+    {
+      "id": "evt-008",
+      "type": "activity",
+      "description": "Silvermoon Race",
+      "locationRef": "loc_fresno_area",
+      "date": "2025-04-12"
     },
-    "day-2025-04-15": {
-      "weekRef": "week2",
-      "date": "2025-04-15",
-      "dayName": "Tuesday, April 15",
-      "dayNumber": 9,
-      "eventRefs": ["evt_017"]
+    {
+      "id": "evt-009",
+      "type": "activity",
+      "description": "Explore San Francisco",
+      "locationRef": "loc_sf_staples",
+      "startDate": "2025-04-14",
+      "endDate": "2025-04-15"
     },
-    "day-2025-04-16": {
-      "weekRef": "week2",
+    {
+      "id": "evt-010",
+      "type": "car-rental",
+      "description": "Car Rental Drop-off: Hertz",
+      "locationRef": "loc_sfo_airport",
       "date": "2025-04-16",
-      "dayName": "Wednesday, April 16",
-      "dayNumber": 10,
-      "eventRefs": ["evt_018", "evt_019", "evt_020", "evt_021", "evt_022"]
+      "time": "11:00 AM"
     },
-    "day-2025-04-17": {
-      "weekRef": "week2",
-      "date": "2025-04-17",
-      "dayName": "Thursday, April 17",
-      "dayNumber": 11,
-      "eventRefs": ["evt_023"]
+    {
+      "id": "evt-011",
+      "type": "flight",
+      "description": "Flight: American Airlines AA 2651",
+      "details": "San Francisco to Charlotte",
+      "date": "2025-04-16",
+      "time": "1:54 PM - 9:50 PM"
     },
-    "day-2025-04-18": {
-      "weekRef": "week2",
-      "date": "2025-04-18",
-      "dayName": "Friday, April 18",
-      "dayNumber": 12,
-      "eventRefs": ["evt_024"]
+    {
+      "id": "evt-012",
+      "type": "flight",
+      "description": "Flight: American Airlines AA 2956",
+      "details": "Charlotte to Fort Lauderdale",
+      "date": "2025-04-16",
+      "time": "10:20 PM - 12:15 AM (next day)"
     },
-    "day-2025-04-19": {
-      "weekRef": "week2",
+    {
+      "id": "evt-013",
+      "type": "activity",
+      "description": "Explore Fort Lauderdale",
+      "locationRef": "loc_dania_beach_simple",
+      "startDate": "2025-04-17",
+      "endDate": "2025-04-19"
+    },
+    {
+      "id": "evt-014",
+      "type": "activity",
+      "description": "Shopping for Cruise",
+      "locationRef": "loc_shopping_cruise",
       "date": "2025-04-19",
-      "dayName": "Saturday, April 19",
-      "dayNumber": 13,
-      "eventRefs": ["evt_025", "evt_026"]
+      "time": "Afternoon"
     },
-    "day-2025-04-20": {
-      "weekRef": "week2",
-      "date": "2025-04-20",
-      "dayName": "Sunday, April 20",
-      "dayNumber": 14,
-      "eventRefs": ["evt_027", "evt_028"]
-    },
-    "day-2025-04-21": {
-      "weekRef": "week3",
-      "date": "2025-04-21",
-      "dayName": "Monday, April 21",
-      "dayNumber": 15,
-      "eventRefs": ["evt_029"]
-    },
-    "day-2025-04-22": {
-      "weekRef": "week3",
-      "date": "2025-04-22",
-      "dayName": "Tuesday, April 22",
-      "dayNumber": 16,
-      "eventRefs": ["evt_030"]
-    },
-    "day-2025-04-23": {
-      "weekRef": "week3",
-      "date": "2025-04-23",
-      "dayName": "Wednesday, April 23",
-      "dayNumber": 17,
-      "eventRefs": ["evt_031"]
-    },
-    "day-2025-04-24": {
-      "weekRef": "week3",
-      "date": "2025-04-24",
-      "dayName": "Thursday, April 24",
-      "dayNumber": 18,
-      "eventRefs": ["evt_032"]
-    },
-    "day-2025-04-25": {
-      "weekRef": "week3",
-      "date": "2025-04-25",
-      "dayName": "Friday, April 25",
-      "dayNumber": 19,
-      "eventRefs": ["evt_033"]
-    },
-    "day-2025-04-26": {
-      "weekRef": "week3",
+    {
+      "id": "evt-015",
+      "type": "car-rental",
+      "description": "Car Rental Pickup: Budget",
+      "locationRef": "loc_budget_fll",
       "date": "2025-04-26",
-      "dayName": "Saturday, April 26",
-      "dayNumber": 20,
-      "eventRefs": ["evt_034", "evt_035", "evt_036", "evt_037"]
+      "time": "9:00 AM"
     },
-    "day-2025-04-27": {
-      "weekRef": "week3",
-      "date": "2025-04-27",
-      "dayName": "Sunday, April 27",
-      "dayNumber": 21,
-      "eventRefs": ["evt_038", "evt_039"]
+    {
+      "id": "evt-016",
+      "type": "activity",
+      "description": "FC Dallas vs Inter Miami FC",
+      "locationRef": "loc_chase_stadium",
+      "date": "2025-04-26",
+      "time": "Afternoon"
     },
-    "day-2025-04-28": {
-      "weekRef": "week4",
-      "date": "2025-04-28",
-      "dayName": "Monday, April 28",
-      "dayNumber": 22,
-      "eventRefs": ["evt_040"]
+    {
+      "id": "evt-017",
+      "type": "activity",
+      "description": "Explore Orlando Area",
+      "locationRef": "loc_orlando_area",
+      "date": "2025-04-28"
     },
-    "day-2025-04-29": {
-      "weekRef": "week4",
-      "date": "2025-04-29",
-      "dayName": "Tuesday, April 29",
-      "dayNumber": 23,
-      "eventRefs": ["evt_041"]
+    {
+      "id": "evt-018",
+      "type": "activity",
+      "description": "Disney World Visit",
+      "locationRef": "loc_disney_world",
+      "startDate": "2025-04-29",
+      "endDate": "2025-05-01",
+      "certainty": "tentative"
     },
-    "day-2025-04-30": {
-      "weekRef": "week4",
-      "date": "2025-04-30",
-      "dayName": "Wednesday, April 30",
-      "dayNumber": 24,
-      "eventRefs": ["evt_042"]
+    {
+      "id": "evt-019",
+      "type": "activity",
+      "description": "Explore Orlando Area",
+      "locationRef": "loc_orlando_area",
+      "date": "2025-05-02"
     },
-    "day-2025-05-01": {
-      "weekRef": "week4",
-      "date": "2025-05-01",
-      "dayName": "Thursday, May 1",
-      "dayNumber": 25,
-      "eventRefs": ["evt_043"]
-    },
-    "day-2025-05-02": {
-      "weekRef": "week4",
-      "date": "2025-05-02",
-      "dayName": "Friday, May 2",
-      "dayNumber": 26,
-      "eventRefs": ["evt_044"]
-    },
-    "day-2025-05-03": {
-      "weekRef": "week4",
+    {
+      "id": "evt-020",
+      "type": "car-rental",
+      "description": "Car Rental Drop-off: Budget",
+      "locationRef": "loc_mco_airport",
       "date": "2025-05-03",
-      "dayName": "Saturday, May 3",
-      "dayNumber": 27,
-      "eventRefs": ["evt_045", "evt_046", "evt_047", "evt_048", "evt_049"]
+      "time": "2:00 PM"
     },
-    "day-2025-05-04": {
-      "weekRef": "week4",
-      "date": "2025-05-04",
-      "dayName": "Sunday, May 4",
-      "dayNumber": 28,
-      "eventRefs": ["evt_050"]
+    {
+      "id": "evt-021",
+      "type": "flight",
+      "description": "Flight: American Airlines AA 1153",
+      "details": "Orlando to Washington, D.C.",
+      "date": "2025-05-03",
+      "time": "3:12 PM - 5:31 PM"
     },
-    "day-2025-05-05": {
-      "weekRef": "week5",
+    {
+      "id": "evt-022",
+      "type": "car-rental",
+      "description": "Car Rental Pickup: Hertz",
+      "locationRef": "loc_dca_airport",
+      "date": "2025-05-03",
+      "time": "5:00 PM"
+    },
+    {
+      "id": "evt-023",
+      "type": "activity",
+      "description": "Explore Washington DC Area",
+      "locationRef": "loc_dc_area",
+      "date": "2025-05-04"
+    },
+    {
+      "id": "evt-024",
+      "type": "activity",
+      "description": "Explore Washington DC Area",
+      "locationRef": "loc_dc_area",
+      "date": "2025-05-05"
+    },
+    {
+      "id": "evt-025",
+      "type": "activity",
+      "description": "Visit US Capitol",
+      "locationRef": "loc_us_capitol",
       "date": "2025-05-05",
-      "dayName": "Monday, May 5",
-      "dayNumber": 29,
-      "eventRefs": ["evt_051", "evt_052"]
+      "time": "Morning/Afternoon"
     },
-    "day-2025-05-06": {
-      "weekRef": "week5",
-      "date": "2025-05-06",
-      "dayName": "Tuesday, May 6",
-      "dayNumber": 30,
-      "eventRefs": ["evt_053"]
+    {
+      "id": "evt-026",
+      "type": "activity",
+      "description": "Explore Washington DC Area",
+      "locationRef": "loc_dc_area",
+      "startDate": "2025-05-06",
+      "endDate": "2025-05-09"
     },
-    "day-2025-05-07": {
-      "weekRef": "week5",
-      "date": "2025-05-07",
-      "dayName": "Wednesday, May 7",
-      "dayNumber": 31,
-      "eventRefs": ["evt_054"]
-    },
-    "day-2025-05-08": {
-      "weekRef": "week5",
-      "date": "2025-05-08",
-      "dayName": "Thursday, May 8",
-      "dayNumber": 32,
-      "eventRefs": ["evt_055"]
-    },
-    "day-2025-05-09": {
-      "weekRef": "week5",
-      "date": "2025-05-09",
-      "dayName": "Friday, May 9",
-      "dayNumber": 33,
-      "eventRefs": ["evt_056"]
-    },
-    "day-2025-05-10": {
-      "weekRef": "week5",
+    {
+      "id": "evt-027",
+      "type": "car-rental",
+      "description": "Car Rental Drop-off: Hertz",
+      "locationRef": "loc_iad_airport",
       "date": "2025-05-10",
-      "dayName": "Saturday, May 10",
-      "dayNumber": 34,
-      "eventRefs": ["evt_057", "evt_058", "evt_059", "evt_060"]
+      "time": "3:00 PM"
     },
-    "day-2025-05-11": {
-      "weekRef": "week5",
+    {
+      "id": "evt-028",
+      "type": "flight",
+      "description": "Flight: United Airlines UA 2142",
+      "details": "Washington, D.C. to San Francisco",
+      "date": "2025-05-10",
+      "time": "4:10 PM - 7:15 PM"
+    },
+    {
+      "id": "evt-029",
+      "type": "flight",
+      "description": "Flight: Air New Zealand NZ 7",
+      "details": "San Francisco to Auckland",
       "date": "2025-05-11",
-      "dayName": "Sunday, May 11",
-      "dayNumber": 35,
-      "eventRefs": ["evt_061", "evt_062"]
+      "time": "10:05 PM - 6:00 AM (May 13)"
     },
-    "day-2025-05-12": {
-      "weekRef": "week6",
+    {
+      "id": "evt-030",
+      "type": "flight",
+      "description": "Flying Home",
+      "locationRef": "loc_pacific_ocean",
       "date": "2025-05-12",
-      "dayName": "Monday, May 12",
-      "dayNumber": 36,
-      "eventRefs": ["evt_063"]
+      "time": "In Flight"
     },
-    "day-2025-05-13": {
-      "weekRef": "week6",
+    {
+      "id": "evt-031",
+      "type": "flight",
+      "description": "Arrival in Auckland",
+      "locationRef": "loc_akl",
       "date": "2025-05-13",
-      "dayName": "Tuesday, May 13",
-      "dayNumber": 37,
-      "eventRefs": ["evt_064", "evt_065"]
+      "time": "6:00 AM"
+    },
+    {
+      "id": "evt-032",
+      "type": "flight",
+      "description": "Flight: Air New Zealand NZ 527",
+      "details": "Auckland to Christchurch",
+      "date": "2025-05-13",
+      "time": "9:00 AM - 10:25 AM"
     }
-  },
+  ],
   "weeks": [
     {
       "id": "week1",
       "weekHeader": "Week 1: April 7-13",
-      "dayRefs": [
-        "day-2025-04-07",
-        "day-2025-04-08",
-        "day-2025-04-09",
-        "day-2025-04-10",
-        "day-2025-04-11",
-        "day-2025-04-12",
-        "day-2025-04-13"
-      ]
+      "startDate": "2025-04-07",
+      "endDate": "2025-04-13"
     },
     {
       "id": "week2",
       "weekHeader": "Week 2: April 14-20",
-      "dayRefs": [
-        "day-2025-04-14",
-        "day-2025-04-15",
-        "day-2025-04-16",
-        "day-2025-04-17",
-        "day-2025-04-18",
-        "day-2025-04-19",
-        "day-2025-04-20"
-      ]
+      "startDate": "2025-04-14",
+      "endDate": "2025-04-20"
     },
     {
       "id": "week3",
       "weekHeader": "Week 3: April 21-27",
-      "dayRefs": [
-        "day-2025-04-21",
-        "day-2025-04-22",
-        "day-2025-04-23",
-        "day-2025-04-24",
-        "day-2025-04-25",
-        "day-2025-04-26",
-        "day-2025-04-27"
-      ]
+      "startDate": "2025-04-21",
+      "endDate": "2025-04-27"
     },
     {
       "id": "week4",
       "weekHeader": "Week 4: April 28 - May 4",
-      "dayRefs": [
-        "day-2025-04-28",
-        "day-2025-04-29",
-        "day-2025-04-30",
-        "day-2025-05-01",
-        "day-2025-05-02",
-        "day-2025-05-03",
-        "day-2025-05-04"
-      ]
+      "startDate": "2025-04-28",
+      "endDate": "2025-05-04"
     },
     {
       "id": "week5",
       "weekHeader": "Week 5: May 5-11",
-      "dayRefs": [
-        "day-2025-05-05",
-        "day-2025-05-06",
-        "day-2025-05-07",
-        "day-2025-05-08",
-        "day-2025-05-09",
-        "day-2025-05-10",
-        "day-2025-05-11"
-      ]
+      "startDate": "2025-05-05",
+      "endDate": "2025-05-11"
     },
     {
       "id": "week6",
       "weekHeader": "Week 6: May 12-13",
-      "dayRefs": ["day-2025-05-12", "day-2025-05-13"]
+      "startDate": "2025-05-12",
+      "endDate": "2025-05-13"
     }
   ]
 }
