@@ -80,6 +80,7 @@ async function loadTripData() {
     // --- Data Lookups ---
     const locations = data.locations || {};
     const accommodations = data.accommodations || [];
+    const days = data.days || [];
     // Cruises are now handled within accommodations/events
     const events = data.events || [];
     const weeks = data.weeks || [];
@@ -107,7 +108,8 @@ async function loadTripData() {
       tripEndDate,
       itineraryByDate,
       locations,
-      accommodations
+      accommodations,
+      days
       // cruises // Removed: Handled via accommodation type
     );
 
@@ -332,7 +334,8 @@ function calculateDailyInfo(
   endDate,
   itineraryByDate,
   locations,
-  accommodations
+  accommodations,
+  days
   // cruises // Removed
 ) {
   const dailyInfoByDate = {};
@@ -342,6 +345,8 @@ function calculateDailyInfo(
   for (let d = new Date(startDate); d <= endDate; d = addDays(d, 1)) {
     const dateStr = formatDate(d);
     const dayItems = itineraryByDate[dateStr] || [];
+
+    const day = days.find((d) => d.date === dateStr);
 
     let dayTitle = "Location Unknown";
     let stayingAt = null; // Where you are staying *this night*
@@ -455,8 +460,9 @@ function calculateDailyInfo(
     }
 
     dailyInfoByDate[dateStr] = {
-      title: dayTitle,
+      title: (day && day.title) || dayTitle,
       stayingAt: stayingAt, // Where you are *staying* this night (determined by end of day state)
+      timezone: day?.timezone || null,
       // onCruise: onCruise, // Already removed
     };
 
@@ -474,6 +480,7 @@ function calculateDailyInfo(
     }
     // If embarking today, set cruise for tomorrow's check (Handled by checkIn logic now)
   }
+
   return dailyInfoByDate;
 }
 
@@ -497,6 +504,7 @@ function structureDataForAlpine(
     const info = dailyInfoByDate[dateStr] || {
       title: "Error",
       stayingAt: null,
+      timezone: null,
       // onCruise: null, // Removed
     };
 
@@ -574,6 +582,7 @@ function structureDataForAlpine(
       dayNumber: dayCounter,
       title: info.title,
       stayingAt: info.stayingAt,
+      timezone: info.timezone,
       // onCruise: info.onCruise, // Removed
       // items: processedItems, // OLD: Replaced
       confirmedItems: confirmedItems, // NEW

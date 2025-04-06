@@ -86,8 +86,47 @@
                       class="day-number"
                       x-text="`Day ${day.dayNumber}`"
                     ></span>
-                    : <span class="day-name" x-text="day.dayName"></span> -
+                    : <span class="day-name" x-text="day.dayName"></span>
                     <strong class="day-title" x-text="day.title"></strong>
+                    <span class="day-name" x-text="getTimeDisplay(day)"></span>
+
+                    <script>
+                      function getTimeDisplay(day) {
+                        if (!day.timezone) return "";
+
+                        const now = new Date();
+                        const dayStart = new Date(day.dateStr + "T00:00:00");
+                        const dayEnd = new Date(day.dateStr + "T23:59:59");
+
+                        const formatter = new Intl.DateTimeFormat("en-US", {
+                          timeZone: day.timezone,
+                          hour: "numeric",
+                          minute: "numeric",
+                          hour12: true,
+                        });
+
+                        if (now < dayStart) {
+                          const diffDays = Math.ceil(
+                            (dayStart - now) / (1000 * 60 * 60 * 24)
+                          );
+                          if (diffDays > 2) {
+                            return `${diffDays} days until`;
+                          } else {
+                            const diffHours = Math.ceil(
+                              (dayStart - now) / (1000 * 60 * 60)
+                            );
+                            return `${diffHours} hours until`;
+                          }
+                        } else if (now >= dayStart && now <= dayEnd) {
+                          return formatter.format(now);
+                        } else {
+                          const diffDays = Math.ceil(
+                            (now - dayEnd) / (1000 * 60 * 60 * 24)
+                          );
+                          return `${diffDays} days ago`;
+                        }
+                      }
+                    </script>
                     <!-- Indicator is now handled by ::before pseudo-element in CSS -->
                   </div>
                   <div class="collapsible-content">

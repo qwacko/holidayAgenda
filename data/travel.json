@@ -775,7 +775,8 @@
       "description": "Arranged by David / Paige",
       "locationRef": "loc_dc_area",
       "startDate": "2025-05-03",
-      "endDate": "2025-05-10"
+      "endDate": "2025-05-10",
+      "tentative": true
     },
     {
       "id": "evt-new-033",
@@ -790,7 +791,8 @@
       "description": "White House?",
       "locationRef": "loc_dc_area",
       "startDate": "2025-05-03",
-      "endDate": "2025-05-10"
+      "endDate": "2025-05-10",
+      "tentative": true
     }
   ],
   "weeks": [
@@ -829,6 +831,193 @@
       "weekHeader": "Week 6: May 12-13",
       "startDate": "2025-05-12",
       "endDate": "2025-05-13"
+    }
+  ],
+  "days": [
+    {
+      "date": "2025-04-07",
+      "title": "Travel to San Francisco",
+      "timezone": "America/Los_Angeles"
+    },
+    {
+      "date": "2025-04-08",
+      "title": "Travel To Yosemite",
+      "timezone": "America/Los_Angeles"
+    },
+    {
+      "date": "2025-04-09",
+      "title": "Fresno / Yosemite",
+      "timezone": "America/Los_Angeles"
+    },
+    {
+      "date": "2025-04-10",
+      "title": "Fresno / Yosemite",
+      "timezone": "America/Los_Angeles"
+    },
+    {
+      "date": "2025-04-11",
+      "title": "Fresno / Yosemite",
+      "timezone": "America/Los_Angeles"
+    },
+    {
+      "date": "2025-04-12",
+      "title": "Fresno / Yosemite",
+      "timezone": "America/Los_Angeles"
+    },
+    {
+      "date": "2025-04-13",
+      "title": "Travel to San Francisco",
+      "timezone": "America/Los_Angeles"
+    },
+    {
+      "date": "2025-04-14",
+      "title": "Explore San Francisco",
+      "timezone": "America/Los_Angeles"
+    },
+    {
+      "date": "2025-04-15",
+      "title": "Explore San Francisco",
+      "timezone": "America/Los_Angeles"
+    },
+    {
+      "date": "2025-04-16",
+      "title": "Travel to Fort Lauderdale",
+      "timezone": "America/Los_Angeles"
+    },
+    {
+      "date": "2025-04-17",
+      "title": "Explore Fort Lauderdale",
+      "timezone": "America/New_York"
+    },
+    {
+      "date": "2025-04-18",
+      "title": "Explore Fort Lauderdale",
+      "timezone": "America/New_York"
+    },
+    {
+      "date": "2025-04-19",
+      "title": "Explore Fort Lauderdale",
+      "timezone": "America/New_York"
+    },
+    {
+      "date": "2025-04-20",
+      "title": "Cruise Embarkation",
+      "timezone": "America/New_York"
+    },
+    {
+      "date": "2025-04-21",
+      "title": "Port Call in Nassau",
+      "timezone": "America/Nassau"
+    },
+    {
+      "date": "2025-04-22",
+      "title": "At Sea",
+      "timezone": "America/Nassau"
+    },
+    {
+      "date": "2025-04-23",
+      "title": "Port Call in Falmouth",
+      "timezone": "America/Jamaica"
+    },
+    {
+      "date": "2025-04-24",
+      "title": "Port Call in Labadee",
+      "timezone": "America/Port-au-Prince"
+    },
+    {
+      "date": "2025-04-25",
+      "title": "At Sea",
+      "timezone": "America/New_York"
+    },
+    {
+      "date": "2025-04-26",
+      "title": "Off Ship And Fort Lauderdale",
+      "timezone": "America/New_York"
+    },
+    {
+      "date": "2025-04-27",
+      "title": "Orlando",
+      "timezone": "America/New_York"
+    },
+    {
+      "date": "2025-04-28",
+      "title": "Orlando",
+      "timezone": "America/New_York"
+    },
+    {
+      "date": "2025-04-29",
+      "title": "Orlando",
+      "timezone": "America/New_York"
+    },
+    {
+      "date": "2025-04-30",
+      "title": "Orlando",
+      "timezone": "America/New_York"
+    },
+    {
+      "date": "2025-05-01",
+      "title": "Orlando",
+      "timezone": "America/New_York"
+    },
+    {
+      "date": "2025-05-02",
+      "title": "Orlando",
+      "timezone": "America/New_York"
+    },
+    {
+      "date": "2025-05-03",
+      "title": "Travel to Washington DC",
+      "timezone": "America/New_York"
+    },
+    {
+      "date": "2025-05-04",
+      "title": "Washington DC",
+      "timezone": "America/New_York"
+    },
+    {
+      "date": "2025-05-05",
+      "title": "Washington DC",
+      "timezone": "America/New_York"
+    },
+    {
+      "date": "2025-05-06",
+      "title": "Washington DC",
+      "timezone": "America/New_York"
+    },
+    {
+      "date": "2025-05-07",
+      "title": "Washington DC",
+      "timezone": "America/New_York"
+    },
+    {
+      "date": "2025-05-08",
+      "title": "Washington DC",
+      "timezone": "America/New_York"
+    },
+    {
+      "date": "2025-05-09",
+      "title": "Washington DC",
+      "timezone": "America/New_York"
+    },
+    {
+      "date": "2025-05-10",
+      "title": "Travel to San Francisco",
+      "timezone": "America/New_York"
+    },
+    {
+      "date": "2025-05-11",
+      "title": "Travel to Christchurch",
+      "timezone": "America/Los_Angeles"
+    },
+    {
+      "date": "2025-05-12",
+      "title": "Travel Home",
+      "timezone": "Pacific/Auckland"
+    },
+    {
+      "date": "2025-05-13",
+      "title": "Arrive in Christchurch",
+      "timezone": "Pacific/Auckland"
     }
   ]
 }
