@@ -3,35 +3,330 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Trip Loading...</title>
-    <!-- Title will be updated by JS -->
+    <!-- Title will be updated by Alpine -->
+    <title>Loading Trip...</title>
     <link rel="stylesheet" href="css/style.css" />
+    <!-- Include Alpine.js -->
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+    ></script>
+    <!-- Include our refactored script -->
+    <script src="js/script.js"></script>
+    <style>
+      /* Add simple transition for Alpine's x-show */
+      [x-cloak] {
+        display: none !important;
+      }
+      .collapsible-content {
+        overflow: hidden;
+        transition: max-height 0.3s ease-out;
+        max-height: 1000px; /* Set a large enough max-height for expanded state */
+      }
+      .collapsed .collapsible-content {
+        max-height: 0;
+      }
+      /* Style for generic explore activities */
+      .event-item.generic-explore {
+        opacity: 0.6;
+        font-style: italic;
+      }
+      /* Highlight today */
+      .day-container.today {
+        border-left: 5px solid #4caf50; /* Example highlight */
+        padding-left: 10px;
+        margin-left: -15px; /* Adjust based on your layout */
+      }
+      /* Basic styling for event types */
+      .event-type-tag {
+        display: inline-block;
+        padding: 2px 6px;
+        font-size: 0.8em;
+        border-radius: 4px;
+        margin-right: 8px;
+        color: white;
+        text-transform: capitalize;
+      }
+      .event-type-flight {
+        background-color: #2196f3;
+      } /* Blue */
+      .event-type-accommodation-check-in,
+      .event-type-accommodation-check-out {
+        background-color: #ff9800;
+      } /* Orange */
+      .event-type-cruise-embark,
+      .event-type-cruise-disembark,
+      .event-type-cruise-port-call,
+      .event-type-cruise-sea-day {
+        background-color: #00bcd4;
+      } /* Cyan */
+      .event-type-activity {
+        background-color: #4caf50;
+      } /* Green */
+      .event-type-travel {
+        background-color: #795548;
+      } /* Brown */
+      .event-type-other {
+        background-color: #9e9e9e;
+      } /* Grey */
+
+      /* Ensure location details wrap */
+      .location-details {
+        white-space: pre-wrap; /* Respect newlines from formatLocation */
+        font-size: 0.9em;
+        color: #555;
+        margin-left: 10px;
+      }
+    </style>
   </head>
-  <body>
+  <body x-data="tripAgenda" x-init="init" x-cloak>
     <header>
-      <h1>Loading Trip...</h1>
-      <!-- Placeholder, updated by JS -->
-      <p>Loading Dates...</p>
-      <!-- Placeholder, updated by JS -->
+      <h1 x-text="tripTitle">Loading Trip...</h1>
+      <p x-text="tripDates">Loading Dates...</p>
     </header>
 
     <main>
-      <div class="progress-container">
-        <div class="progress-bar">
-          <div class="progress-fill" id="trip-progress"></div>
+      <!-- Loading/Error State -->
+      <template x-if="loading">
+        <div>Loading itinerary...</div>
+      </template>
+      <template x-if="error">
+        <div style="color: red; padding: 20px" x-text="error"></div>
+      </template>
+
+      <!-- Progress Bar -->
+      <template x-if="!error && !loading && tripStartDateUTC && tripEndDateUTC">
+        <div class="progress-container">
+          <div class="progress-bar">
+            <div class="progress-fill" :style="{ width: progress + '%' }"></div>
+          </div>
+          <div class="progress-text" x-text="progressText">
+            Loading trip progress...
+          </div>
         </div>
-        <div class="progress-text" id="progress-text">
-          Loading trip progress...
+      </template>
+
+      <!-- Itinerary Content -->
+      <template x-if="!loading && !error" x-for="week in weeks" :key="week.id">
+        <div
+          class="week-container collapsible"
+          :class="{ 'expanded': isOpenWeek(week.id), 'collapsed': !isOpenWeek(week.id) }"
+        >
+          <div
+            class="week-header collapsible-header"
+            @click="toggleWeek(week.id)"
+          >
+            <span x-text="week.header"></span>
+            <!-- Add indicator for open/closed state -->
+            <span
+              x-text="isOpenWeek(week.id) ? '▼' : '►'"
+              style="float: right; margin-right: 10px"
+            ></span>
+          </div>
+          <div class="collapsible-content">
+            <template x-for="day in week.days" :key="day.dateStr">
+              <div
+                class="day-container collapsible"
+                :class="{ 'expanded': isOpenDay(day.dateStr), 'collapsed': !isOpenDay(day.dateStr), 'today': day.dateStr === todayDateString }"
+              >
+                <div
+                  class="day-header collapsible-header"
+                  @click="toggleDay(day.dateStr)"
+                >
+                  <span
+                    class="day-number"
+                    x-text="`Day ${day.dayNumber}`"
+                  ></span
+                  >: <span class="day-name" x-text="day.dayName"></span> -
+                  <strong class="day-title" x-text="day.title"></strong>
+                  <!-- Add indicator for open/closed state -->
+                  <span
+                    x-text="isOpenDay(day.dateStr) ? '▽' : '▷'"
+                    style="float: right; margin-right: 10px"
+                  ></span>
+                </div>
+                <div class="collapsible-content">
+                  <!-- Accommodation/Cruise Status -->
+                  <template x-if="day.stayingAt">
+                    <div class="status-info">
+                      🏨 Staying at: <strong x-text="day.stayingAt"></strong>
+                    </div>
+                  </template>
+                  <template x-if="day.onCruise">
+                    <div class="status-info">
+                      🚢 On: <strong x-text="day.onCruise"></strong>
+                    </div>
+                  </template>
+
+                  <!-- Events List -->
+                  <ul class="events-list">
+                    <template x-for="(item, index) in day.items" :key="index">
+                      <li
+                        class="event-item"
+                        :class="{ 'generic-explore': item.isGenericExplore }"
+                      >
+                        <!-- Event Type Tag -->
+                        <span
+                          :class="`event-type-tag event-type-${item.eventType.replace('_', '-') || 'other'}`"
+                          x-text="item.eventType.replace('_', ' ')"
+                        ></span>
+
+                        <!-- Time -->
+                        <template x-if="item.time">
+                          <strong x-text="item.time"></strong>:
+                        </template>
+
+                        <!-- Description -->
+                        <span x-text="item.displayDescription"></span>
+
+                        <!-- Location Name (if different from day title or specific) -->
+                        <template
+                          x-if="item.locationName && item.locationName !== day.title && !item.isGenericExplore"
+                        >
+                          <span>
+                            at <strong x-text="item.locationName"></strong
+                          ></span>
+                        </template>
+
+                        <!-- Confirmation/Reference -->
+                        <template x-if="item.confirmation">
+                          <span>
+                            (Ref:
+                            <span x-text="item.confirmation"></span>)</span
+                          >
+                        </template>
+
+                        <!-- Notes -->
+                        <template x-if="item.notes">
+                          <p class="notes" x-text="item.notes"></p>
+                        </template>
+
+                        <!-- Formatted Location Details -->
+                        <template x-if="item.formattedLocation">
+                          <div
+                            class="location-details"
+                            x-text="item.formattedLocation"
+                          ></div>
+                        </template>
+                      </li>
+                    </template>
+                    <template x-if="day.items.length === 0">
+                      <li class="no-events">No scheduled events.</li>
+                    </template>
+                  </ul>
+                </div>
+              </div>
+            </template>
+          </div>
         </div>
-      </div>
-      <!-- Itinerary will be loaded below the progress bar by script.js -->
+      </template>
     </main>
 
     <footer>
       <p>&copy; 2025 Family Name</p>
-      <!-- Keep footer -->
     </footer>
 
-    <script src="js/script.js"></script>
+    <script>
+      document.addEventListener("alpine:init", () => {
+        Alpine.data("tripAgenda", () => ({
+          tripTitle: "Loading Trip...",
+          tripDates: "Loading Dates...",
+          tripStartDateUTC: null,
+          tripEndDateUTC: null,
+          weeks: [],
+          locations: {},
+          loading: true,
+          error: null,
+          todayDateString: formatDate(new Date()), // Set initial value
+          openWeekIds: [], // Store IDs of open weeks
+          openDayIds: [], // Store date strings of open days
+          nowUTC: Date.now(), // For progress calculation
+          progressInterval: null, // To update progress periodically
+
+          // --- Computed Properties ---
+          get progress() {
+            return calculateProgress(
+              this.tripStartDateUTC,
+              this.tripEndDateUTC,
+              this.nowUTC
+            );
+          },
+          get progressText() {
+            return getProgressText(this.progress);
+          },
+
+          // --- Methods ---
+          async init() {
+            console.log("Alpine init: Loading trip data...");
+            const data = await loadTripData();
+            console.log("Alpine init: Data loaded", data);
+            this.tripTitle = data.tripTitle;
+            this.tripDates = data.tripDates;
+            this.tripStartDateUTC = data.tripStartDateUTC;
+            this.tripEndDateUTC = data.tripEndDateUTC;
+            this.weeks = data.weeks;
+            this.locations = data.locations;
+            this.error = data.error;
+            this.loading = false;
+            this.todayDateString = data.todayDateString; // Update with value from loadTripData if needed
+            // Initialize open states (start all open)
+            this.openWeekIds = this.weeks.map((w) => w.id);
+            this.openDayIds = this.weeks.flatMap((w) =>
+              w.days.map((d) => d.dateStr)
+            );
+
+            // Update progress periodically
+            this.updateProgressTime(); // Initial update
+            this.progressInterval = setInterval(() => {
+              this.updateProgressTime();
+            }, 60000); // Update every minute
+
+            // Set document title
+            if (!this.error) {
+              document.title = this.tripTitle;
+            } else {
+              document.title = "Error Loading Trip";
+            }
+          },
+
+          updateProgressTime() {
+            this.nowUTC = Date.now();
+          },
+
+          // Toggle week visibility
+          toggleWeek(weekId) {
+            const index = this.openWeekIds.indexOf(weekId);
+            if (index > -1) {
+              this.openWeekIds.splice(index, 1); // Close it
+            } else {
+              this.openWeekIds.push(weekId); // Open it
+            }
+          },
+          isOpenWeek(weekId) {
+            return this.openWeekIds.includes(weekId);
+          },
+
+          // Toggle day visibility
+          toggleDay(dayDateStr) {
+            const index = this.openDayIds.indexOf(dayDateStr);
+            if (index > -1) {
+              this.openDayIds.splice(index, 1); // Close it
+            } else {
+              this.openDayIds.push(dayDateStr); // Open it
+            }
+          },
+          isOpenDay(dayDateStr) {
+            return this.openDayIds.includes(dayDateStr);
+          },
+
+          // Cleanup interval on component destruction (though unlikely for body)
+          destroy() {
+            if (this.progressInterval) {
+              clearInterval(this.progressInterval);
+            }
+          },
+        }));
+      });
+    </script>
   </body>
 </html>
