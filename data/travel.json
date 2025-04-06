@@ -94,19 +94,23 @@
     "loc_pacific_ocean": { "name": "Over the Pacific Ocean" },
     "loc_disney_world": {
       "name": "Walt Disney World",
-      "details": "Theme Park Complex"
+      "details": "Theme Park Complex",
+      "url": "https://disneyworld.disney.go.com/"
     }
   },
   "accommodations": [
     {
       "id": "acc_homewood_brisbane",
+      "type": "hotel",
       "name": "Homewood Suites by Hilton San Francisco Airport-North",
       "locationRef": "loc_brisbane_hotel",
       "startDate": "2025-04-07",
-      "endDate": "2025-04-08"
+      "endDate": "2025-04-08",
+      "url": "https://www.hilton.com/en/hotels/sfohwhw-homewood-suites-san-francisco-airport-north/"
     },
     {
       "id": "acc_little_house_oakhurst",
+      "type": "airbnb",
       "name": "\"The Little House in the Big Woods\"",
       "locationRef": "loc_oakhurst_house",
       "startDate": "2025-04-08",
@@ -114,6 +118,7 @@
     },
     {
       "id": "acc_cozy_sf",
+      "type": "airbnb",
       "name": "\"Cozy 2 BR Apt. In The Sunnyside\"",
       "locationRef": "loc_sf_staples",
       "startDate": "2025-04-13",
@@ -121,13 +126,24 @@
     },
     {
       "id": "acc_beautiful_dania",
+      "type": "airbnb",
       "name": "\"Beautiful 2-Bedroom Rental Unit near the Beach\"",
       "locationRef": "loc_dania_beach_apt",
       "startDate": "2025-04-16",
       "endDate": "2025-04-20"
     },
     {
+      "id": "acc_cruise_freedom_seas",
+      "type": "cruise",
+      "name": "Royal Caribbean Freedom of the Seas",
+      "locationRef": "loc_caribbean_sea",
+      "startDate": "2025-04-20",
+      "endDate": "2025-04-26",
+      "url": "https://www.royalcaribbean.com/cruise-ships/freedom-of-the-seas"
+    },
+    {
       "id": "acc_bw_fll",
+      "type": "hotel",
       "name": "Best Western Ft. Lauderdale I-95 Inn",
       "locationRef": "loc_bw_fll",
       "startDate": "2025-04-26",
@@ -135,6 +151,7 @@
     },
     {
       "id": "acc_ken_tanya_davenport",
+      "type": "airbnb",
       "name": "\"Ken & Tanya's Tropical Retreat\"",
       "locationRef": "loc_davenport_house",
       "startDate": "2025-04-27",
@@ -142,6 +159,7 @@
     },
     {
       "id": "acc_cozy_falls_church",
+      "type": "airbnb",
       "name": "\"Cozy Modern Single Family 5 Bedroom Home\"",
       "locationRef": "loc_falls_church_house",
       "startDate": "2025-05-03",
@@ -149,40 +167,11 @@
     },
     {
       "id": "acc_aura_san_bruno",
+      "type": "hotel",
       "name": "Hotel Aura",
       "locationRef": "loc_san_bruno_hotel",
       "startDate": "2025-05-10",
       "endDate": "2025-05-11"
-    }
-  ],
-  "cruises": [
-    {
-      "id": "cruise_freedom_seas",
-      "shipName": "Royal Caribbean Freedom of the Seas",
-      "startDate": "2025-04-20",
-      "endDate": "2025-04-26",
-      "departurePortRef": "loc_fll_port",
-      "arrivalPortRef": "loc_fll_port",
-      "portCalls": [
-        {
-          "date": "2025-04-21",
-          "locationRef": "loc_nassau",
-          "startTime": "7:30 AM",
-          "endTime": "3:30 PM"
-        },
-        {
-          "date": "2025-04-23",
-          "locationRef": "loc_falmouth",
-          "startTime": "7:30 AM",
-          "endTime": "3:30 PM"
-        },
-        {
-          "date": "2025-04-24",
-          "locationRef": "loc_labadee",
-          "startTime": "10:00 AM",
-          "endTime": "5:30 PM"
-        }
-      ]
     }
   ],
   "events": [
@@ -298,6 +287,60 @@
       "time": "Afternoon"
     },
     {
+      "id": "evt-cruise-embark",
+      "type": "cruise-embark",
+      "description": "Embark: Royal Caribbean Freedom of the Seas",
+      "locationRef": "loc_fll_port",
+      "date": "2025-04-20",
+      "time": "Afternoon"
+    },
+    {
+      "id": "evt-port-nassau",
+      "type": "port-call",
+      "description": "Port Call: Nassau",
+      "locationRef": "loc_nassau",
+      "date": "2025-04-21",
+      "time": "7:30 AM - 3:30 PM"
+    },
+    {
+      "id": "evt-sea-day-1",
+      "type": "sea-day",
+      "description": "At Sea",
+      "locationRef": "loc_caribbean_sea",
+      "date": "2025-04-22"
+    },
+    {
+      "id": "evt-port-falmouth",
+      "type": "port-call",
+      "description": "Port Call: Falmouth",
+      "locationRef": "loc_falmouth",
+      "date": "2025-04-23",
+      "time": "7:30 AM - 3:30 PM"
+    },
+    {
+      "id": "evt-port-labadee",
+      "type": "port-call",
+      "description": "Port Call: Labadee",
+      "locationRef": "loc_labadee",
+      "date": "2025-04-24",
+      "time": "10:00 AM - 5:30 PM"
+    },
+    {
+      "id": "evt-sea-day-2",
+      "type": "sea-day",
+      "description": "At Sea",
+      "locationRef": "loc_caribbean_sea",
+      "date": "2025-04-25"
+    },
+    {
+      "id": "evt-cruise-disembark",
+      "type": "cruise-disembark",
+      "description": "Disembark: Royal Caribbean Freedom of the Seas",
+      "locationRef": "loc_fll_port",
+      "date": "2025-04-26",
+      "time": "Morning"
+    },
+    {
       "id": "evt-015",
       "type": "car-rental",
       "description": "Car Rental Pickup: Budget",
@@ -311,7 +354,8 @@
       "description": "FC Dallas vs Inter Miami FC",
       "locationRef": "loc_chase_stadium",
       "date": "2025-04-26",
-      "time": "Afternoon"
+      "time": "Afternoon",
+      "url": "https://www.intermiamicf.com/schedule/"
     },
     {
       "id": "evt-017",
@@ -327,7 +371,7 @@
       "locationRef": "loc_disney_world",
       "startDate": "2025-04-29",
       "endDate": "2025-05-01",
-      "certainty": "tentative"
+      "tentative": true
     },
     {
       "id": "evt-019",

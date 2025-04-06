@@ -46,8 +46,8 @@ footer {
 
 .week-container {
   margin-bottom: 30px;
-  border-left: 4px solid #4a89dc;
-  padding-left: 15px;
+  /* border-left: 4px solid #4a89dc; */ /* Removed border */
+  padding-left: 0; /* Reset padding */
 }
 
 .week-header {
@@ -62,7 +62,7 @@ footer {
 .day-container {
   margin-bottom: 20px;
   padding-bottom: 15px;
-  border-bottom: 1px solid #eee;
+  /* border-bottom: 1px solid #eee; */ /* Removed border, handled by card margins */
 }
 
 .day-header {
@@ -85,21 +85,8 @@ footer {
   margin: 0 10px; /* Add some spacing */
 }
 
-/* --- Accommodation Stay Indicator Styles --- */
-.accommodation-stay-indicator {
-  background-color: #e8f5e9; /* Match accommodation event color */
-  border: 1px solid #c8e6c9;
-  border-left: 4px solid #4caf50; /* Match accommodation event border */
-  padding: 8px 12px;
-  margin: 5px 0 15px 0; /* Add margin below */
-  border-radius: 4px;
-  font-size: 0.9em;
-  color: #388e3c; /* Darker green text */
-}
-
-.accommodation-stay-indicator span {
-  font-weight: bold;
-}
+/* --- Accommodation/Cruise Stay Indicator Styles (Now handled by cards) --- */
+/* Removed .accommodation-stay-indicator styles */
 
 /* Adjust day header for title */
 .day-header {
@@ -114,49 +101,199 @@ footer {
   border-radius: 5px;
 }
 
+/* --- Card Layout Styles --- */
+.event-card {
+  display: flex;
+  margin: 10px 0;
+  border-radius: 5px;
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden; /* Ensure tag color doesn't bleed */
+}
+
+.card-tag {
+  flex-shrink: 0;
+  width: 40px; /* Width for the colored tag/icon area */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 0;
+  background-color: #ccc; /* Default tag color */
+  color: white;
+}
+
+.card-icon {
+  font-size: 1.2em; /* Adjust icon size */
+}
+.card-icon i {
+  /* Target Font Awesome icon if used */
+  width: 1.25em; /* Ensure consistent width for FA icons */
+  text-align: center;
+}
+
+.card-content {
+  flex-grow: 1;
+  padding: 10px 15px;
+  border-left: 1px solid #eee; /* Separator line */
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.card-description {
+  font-weight: bold;
+  margin-right: 10px; /* Space between description and time */
+}
+
+.card-time {
+  font-weight: normal;
+  color: #555;
+  font-size: 0.9em;
+  white-space: nowrap;
+}
+
+.card-details {
+  font-size: 0.9em;
+  color: #666;
+  margin-top: 5px;
+}
+
+.card-details p,
+.card-details div {
+  margin: 3px 0;
+}
+
+.location-name {
+  font-style: italic;
+}
+
+.map-link,
+.url-link {
+  color: #007bff;
+  text-decoration: none;
+  margin-left: 5px;
+  font-size: 0.9em;
+}
+.map-link i,
+.url-link i {
+  /* Style icons within links */
+  margin-right: 3px;
+}
+
+.map-link:hover,
+.url-link:hover {
+  text-decoration: underline;
+}
+
+.notes {
+  font-size: 0.85em;
+  color: #777;
+  margin-top: 8px;
+  background-color: #f9f9f9;
+  padding: 5px;
+  border-radius: 3px;
+}
+
+/* --- Event Type Colors (Applied to Card Tag) --- */
+/* Define color variables for easier management */
+:root {
+  --flight-color: #2196f3; /* Blue */
+  --accommodation-color: #4caf50; /* Green */
+  --airbnb-color: #8bc34a; /* Light Green */
+  --hotel-color: #4caf50; /* Green */
+  --cruise-color: #00bcd4; /* Cyan */
+  --car-rental-color: #ff9800; /* Orange */
+  --activity-color: #9c27b0; /* Purple */
+  --port-call-color: #009688; /* Teal */
+  --sea-day-color: #607d8b; /* Blue Grey */
+  --travel-color: #795548; /* Brown */
+  --other-color: #9e9e9e; /* Grey */
+}
+
+.event-card[data-event-type^="flight"] .card-tag {
+  background-color: var(--flight-color);
+}
+.event-card[data-event-type^="accommodation"] .card-tag,
+.event-card[data-event-type^="hotel"] .card-tag,
+.event-card[data-event-type^="airbnb"] .card-tag {
+  background-color: var(--accommodation-color);
+}
+/* Specific overrides if needed */
+.event-card[data-event-type^="airbnb"] .card-tag {
+  background-color: var(--airbnb-color);
+}
+.event-card[data-event-type^="hotel"] .card-tag {
+  background-color: var(--hotel-color);
+}
+
+.event-card[data-event-type^="cruise"] .card-tag {
+  background-color: var(--cruise-color);
+}
+.event-card[data-event-type^="port-call"] .card-tag {
+  background-color: var(--port-call-color);
+}
+.event-card[data-event-type^="sea-day"] .card-tag {
+  background-color: var(--sea-day-color);
+}
+.event-card[data-event-type^="car-rental"] .card-tag {
+  background-color: var(--car-rental-color);
+}
+.event-card[data-event-type^="activity"] .card-tag {
+  background-color: var(--activity-color);
+}
+.event-card[data-event-type^="travel"] .card-tag {
+  background-color: var(--travel-color);
+}
+.event-card[data-event-type^="other"] .card-tag {
+  background-color: var(--other-color);
+}
+
+/* Style for intermediate accommodation/cruise days */
+.event-card[data-event-type="accommodation-stay"] .card-content,
+.event-card[data-event-type="cruise-stay"] .card-content {
+  /* Optionally make intermediate days less prominent */
+  /* opacity: 0.8; */
+}
+.event-card[data-event-type="accommodation-stay"] .card-description::before {
+  content: "Staying at: ";
+  font-weight: normal;
+  color: #555;
+}
+.event-card[data-event-type="cruise-stay"] .card-description::before {
+  content: "On: ";
+  font-weight: normal;
+  color: #555;
+}
+/* Hide details for simple stay days unless needed */
+.event-card[data-event-type="accommodation-stay"] .card-details,
+.event-card[data-event-type="cruise-stay"] .card-details {
+  display: none;
+}
+
+/* Remove old event styles */
+/*
 .event {
   margin: 10px 0;
   padding: 10px;
   background-color: #f9f9f9;
   border-radius: 5px;
 }
+*/
 
-.event-time {
-  font-weight: bold;
-  color: #555;
-}
+/* Removed old event type background/border styles */
+/* .event-time { ... } */ /* Handled within card */
+/* .flight-event { ... } */
+/* .accommodation-event, ... { ... } */
+/* .car-rental-event { ... } */
+/* .cruise-event { ... } */
+/* .activity-event { ... } */
 
-.flight-event {
-  background-color: #e3f2fd;
-  border-left: 4px solid #2196f3;
-}
-
-.accommodation-event,
-.accommodation-check-in-event,
-.accommodation-check-out-event {
-  background-color: #e8f5e9;
-  border-left: 4px solid #4caf50;
-}
-
-.car-rental-event {
-  background-color: #fff3e0;
-  border-left: 4px solid #ff9800;
-}
-
-.cruise-event {
-  background-color: #e0f7fa;
-  border-left: 4px solid #00bcd4;
-}
-
-.activity-event {
-  background-color: #f3e5f5;
-  border-left: 4px solid #9c27b0;
-}
-
-.location {
-  font-style: italic;
-  color: #666;
-}
+/* .location { ... } */ /* Handled within card details */
 
 .progress-container {
   margin: 20px 0;
@@ -185,15 +322,17 @@ footer {
 .collapsible-header {
   cursor: pointer;
   position: relative; /* Needed for positioning the pseudo-element */
-  padding-right: 25px; /* Space for the indicator */
+  padding-left: 25px; /* Space for the indicator on the left */
+  padding-right: 10px; /* Reset right padding */
   user-select: none; /* Prevent text selection on click */
 }
 
-/* Indicator arrow/plus-minus */
-.collapsible-header::after {
+/* Indicator arrow/plus-minus (Moved to ::before for left positioning) */
+.collapsible-header::before {
   content: "+"; /* Default: collapsed indicator */
   position: absolute;
-  right: 10px;
+  left: 10px; /* Position on the left */
+  right: auto; /* Remove right positioning */
   top: 50%;
   transform: translateY(-50%);
   font-weight: bold;
@@ -202,8 +341,14 @@ footer {
   transition: transform 0.3s ease; /* Smooth rotation */
 }
 
-.collapsible.expanded > .collapsible-header::after {
+.collapsible.expanded > .collapsible-header::before {
   content: "−"; /* Expanded indicator */
+  /* Optional: Add rotation for arrow style */
+  /* transform: translateY(-50%) rotate(90deg); */
+}
+/* Remove old ::after if it exists */
+.collapsible-header::after {
+  content: none;
 }
 
 /* Content container */
@@ -228,16 +373,18 @@ footer {
   /* Optional: Add padding or margin if needed between week header and day containers */
 }
 
+/* Adjust day content padding/border for card layout */
 .day-container > .collapsible-content {
-  padding-left: 15px; /* Indent events within the day */
-  border-left: 2px solid #eee; /* Visual separation for events */
-  margin-left: 5px; /* Space from day header */
+  padding-left: 0; /* No extra indent needed for cards */
+  /* border-left: 2px solid #eee; */ /* Remove border, cards have their own */
+  margin-left: 0; /* No extra margin needed */
+  padding-top: 5px; /* Add a little space above the first card */
 }
 
 /* Ensure day container border is only applied when expanded */
 .day-container.expanded {
   padding-bottom: 15px;
-  border-bottom: 1px solid #eee;
+  /* border-bottom: 1px solid #eee; */ /* Removed */
 }
 .day-container.collapsed {
   padding-bottom: 0;
@@ -248,7 +395,7 @@ footer {
 .week-container.expanded
   > .collapsible-content
   > .day-container:last-child.expanded {
-  border-bottom: none;
+  /* border-bottom: none; */ /* Removed */
 }
 
 /* Specific header styling adjustments */
@@ -266,26 +413,33 @@ footer {
 
 /* --- Tentative Event Styles --- */
 
-.tentative-event {
-  opacity: 0.75; /* Make tentative events slightly faded */
-  font-style: italic; /* Italicize text */
-  background-color: #fafafa; /* Slightly different background */
-  border-left-style: dashed; /* Use dashed border */
+/* --- Tentative Card Styles --- */
+.event-card.tentative-card {
+  opacity: 0.7; /* Make tentative cards slightly faded */
+  border-left: 5px dashed #aaa; /* Dashed left border */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-/* Style for the (Tentative) marker added by JS */
+.event-card.tentative-card .card-tag {
+  opacity: 0.8;
+}
+
+.event-card.tentative-card .card-content {
+  border-left-color: #f0f0f0;
+}
+
+/* Optional: Add a marker within the content */
 .tentative-marker {
-  font-size: 0.8em;
-  color: #888;
-  margin-left: 5px;
-  font-style: normal; /* Keep marker non-italic */
+  display: inline-block;
+  background-color: #eee;
+  color: #777;
+  padding: 1px 5px;
+  font-size: 0.75em;
+  border-radius: 3px;
+  margin-left: 8px;
+  font-style: normal;
+  vertical-align: middle;
 }
-
-/* Override specific event type backgrounds if needed for tentative */
-.tentative-event.activity-event {
-  background-color: #f9f3fa; /* Lighter purple */
-}
-/* Add overrides for other event types if desired */
 
 .progress-text {
   text-align: center;
@@ -300,7 +454,8 @@ footer {
   }
 
   .day-header {
-    /* Existing: flex-direction: column, align-items: flex-start; */
+    flex-direction: column;
+    align-items: flex-start;
   }
   .day-title {
     text-align: left; /* Align left on small screens */
@@ -309,6 +464,7 @@ footer {
     order: 1; /* Place title below day name */
   }
   .day-date {
-    order: 2; /* Place day number after title */
+    order: 0; /* Day number first */
+    margin-bottom: 5px; /* Space below day number */
   }
 }

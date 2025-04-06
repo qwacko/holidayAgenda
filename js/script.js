@@ -49,7 +49,8 @@ function getDayName(date) {
 function formatLocation(location) {
   if (!location) return "";
   let locationText = location.name || "";
-  if (location.address) locationText += `, ${location.address}`;
+  // Don't add address here, it's handled separately with map link
+  // if (location.address) locationText += `, ${location.address}`;
   if (location.country) locationText += `, ${location.country}`;
   if (location.details) locationText += ` (${location.details})`;
   // Keep newlines for potential pre-wrap styling, but remove leading space after newline
@@ -79,7 +80,7 @@ async function loadTripData() {
     // --- Data Lookups ---
     const locations = data.locations || {};
     const accommodations = data.accommodations || [];
-    const cruises = data.cruises || [];
+    // Cruises are now handled within accommodations/events
     const events = data.events || [];
     const weeks = data.weeks || [];
 
@@ -95,8 +96,9 @@ async function loadTripData() {
       tripStartDate,
       tripEndDate,
       accommodations,
-      cruises,
-      events
+      // cruises, // Removed: Handled via accommodation type and events
+      events,
+      locations // Pass locations for address lookup
     );
 
     // --- Calculate daily status ---
@@ -105,8 +107,8 @@ async function loadTripData() {
       tripEndDate,
       itineraryByDate,
       locations,
-      accommodations,
-      cruises
+      accommodations
+      // cruises // Removed: Handled via accommodation type
     );
 
     // --- Structure data for Alpine ---
@@ -223,8 +225,9 @@ function groupItineraryByDate(
   startDate,
   endDate,
   accommodations,
-  cruises,
-  events
+  // cruises, // Removed
+  events,
+  locations // Added for address lookup
 ) {
   const itineraryByDate = {};
   for (let d = new Date(startDate); d <= endDate; d = addDays(d, 1)) {
@@ -232,79 +235,72 @@ function groupItineraryByDate(
     itineraryByDate[dateStr] = [];
   }
 
-  // Process Accommodations
+  // Process Accommodations (including cruises treated as accommodation)
   accommodations.forEach((acc) => {
     const start = parseDate(acc.startDate);
-    const end = parseDate(acc.endDate);
+    const end = parseDate(acc.endDate); // Check-out/Disembark is *after* the last night
     if (!start || !end) return;
-    const checkInDateStr = formatDate(start);
-    const checkOutDateStr = formatDate(end);
-    if (itineraryByDate[checkInDateStr]) {
-      itineraryByDate[checkInDateStr].push({
-        ...acc,
-        eventType: "accommodation-check-in",
-      });
+
+    let current = new Date(start);
+    const endDateAcc = new Date(end); // Use different variable name
+
+    while (current < endDateAcc) {
+      // Loop until the day *before* check-out/disembark
+      const dateStr = formatDate(current);
+      if (itineraryByDate[dateStr]) {
+        let eventType;
+        let isCheckInOut = false;
+        if (formatDate(current) === acc.startDate) {
+          eventType =
+            acc.type === "cruise" ? "cruise-embark" : "accommodation-check-in";
+          isCheckInOut = true;
+        } else {
+          eventType =
+            acc.type === "cruise" ? "cruise-stay" : "accommodation-stay"; // Intermediate days
+        }
+        itineraryByDate[dateStr].push({
+          ...acc,
+          eventType: eventType,
+          isCheckInOut: isCheckInOut, // Flag for potential different display
+          // Add location details directly for easier access later
+          locationName: locations[acc.locationRef]?.name,
+          locationAddress: locations[acc.locationRef]?.address,
+        });
+      }
+      current = addDays(current, 1);
     }
+
+    // Add check-out/disembark event on the end date
+    const checkOutDateStr = formatDate(endDateAcc);
     if (itineraryByDate[checkOutDateStr]) {
       itineraryByDate[checkOutDateStr].push({
         ...acc,
-        eventType: "accommodation-check-out",
+        eventType:
+          acc.type === "cruise"
+            ? "cruise-disembark"
+            : "accommodation-check-out",
+        isCheckInOut: true, // Flag for potential different display
+        locationName: locations[acc.locationRef]?.name, // May differ from departure/arrival port for cruise
+        locationAddress: locations[acc.locationRef]?.address,
       });
     }
   });
 
-  // Process Cruises
-  cruises.forEach((cruise) => {
-    const start = parseDate(cruise.startDate);
-    const end = parseDate(cruise.endDate);
-    if (!start || !end) return;
-    const embarkDateStr = formatDate(start);
-    const disembarkDateStr = formatDate(end);
-    if (itineraryByDate[embarkDateStr]) {
-      itineraryByDate[embarkDateStr].push({
-        ...cruise,
-        eventType: "cruise-embark",
-      });
-    }
-    if (itineraryByDate[disembarkDateStr]) {
-      itineraryByDate[disembarkDateStr].push({
-        ...cruise,
-        eventType: "cruise-disembark",
-      });
-    }
-    // Port Calls & Sea Days
-    let currentDate = addDays(start, 1);
-    const endDateCruise = new Date(end);
-    while (currentDate < endDateCruise) {
-      const currentDateStr = formatDate(currentDate);
-      if (itineraryByDate[currentDateStr]) {
-        const portCall = (cruise.portCalls || []).find(
-          (pc) => pc.date === currentDateStr
-        );
-        if (portCall) {
-          itineraryByDate[currentDateStr].push({
-            ...cruise,
-            ...portCall,
-            eventType: "cruise-port-call",
-          });
-        } else {
-          itineraryByDate[currentDateStr].push({
-            ...cruise,
-            eventType: "cruise-sea-day",
-          });
-        }
-      }
-      currentDate = addDays(currentDate, 1);
-    }
-  });
+  // Removed cruise processing block - handled by accommodation logic now
 
   // Process Events
   events.forEach((event) => {
+    const eventLocation = locations[event.locationRef];
     if (event.date) {
       // Single day event
       const dateStr = event.date;
       if (itineraryByDate[dateStr]) {
-        itineraryByDate[dateStr].push({ ...event, eventType: event.type });
+        itineraryByDate[dateStr].push({
+          ...event,
+          eventType: event.type,
+          locationName: eventLocation?.name,
+          locationAddress: eventLocation?.address,
+        });
       }
     } else if (event.startDate && event.endDate) {
       // Multi-day event
@@ -314,16 +310,13 @@ function groupItineraryByDate(
       while (current <= end) {
         const dateStr = formatDate(current);
         if (itineraryByDate[dateStr]) {
-          let multiDayStatus =
-            formatDate(current) === event.startDate
-              ? " (Start)"
-              : formatDate(current) === event.endDate
-              ? " (End)"
-              : "";
+          // Removed multiDayStatus - no longer adding (Start)/(End)
           itineraryByDate[dateStr].push({
             ...event,
             eventType: event.type,
-            multiDayDescription: `${event.description}${multiDayStatus}`,
+            // Add location details if available
+            locationName: eventLocation?.name,
+            locationAddress: eventLocation?.address,
           });
         }
         current = addDays(current, 1);
@@ -339,108 +332,81 @@ function calculateDailyInfo(
   endDate,
   itineraryByDate,
   locations,
-  accommodations,
-  cruises
+  accommodations
+  // cruises // Removed
 ) {
   const dailyInfoByDate = {};
   let currentAccommodation = null;
-  let currentCruise = null;
+  // let currentCruise = null; // Already removed
 
   for (let d = new Date(startDate); d <= endDate; d = addDays(d, 1)) {
     const dateStr = formatDate(d);
     const dayItems = itineraryByDate[dateStr] || [];
 
     let dayTitle = "Location Unknown";
-    let stayingAt = null;
-    let onCruise = null;
+    let stayingAt = null; // Where you are staying *this night*
+    // let onCruise = null; // Already removed
     let isTravelDay = false;
-    let isCruiseDay = false;
+    // let isCruiseDay = false; // Already removed
 
-    // --- Determine Status Logic (Simplified from original, focusing on state for the day) ---
+    // --- Determine Status Logic ---
 
-    // 1. Check for Check-out / Cruise Disembark (Affects *previous* day's state, but flags today)
+    // 1. Check for Check-out (Affects *previous* day's state, but flags today)
+    // Note: Cruise disembark is handled like accommodation check-out now
     const checkOut = dayItems.find(
-      (item) => item.eventType === "accommodation-check-out"
+      (item) =>
+        item.eventType === "accommodation-check-out" ||
+        item.eventType === "cruise-disembark"
     );
-    const cruiseDisembark = dayItems.find(
-      (item) => item.eventType === "cruise-disembark"
-    );
+    // const cruiseDisembark = dayItems.find( // Already removed
+    //   (item) => item.eventType === "cruise-disembark"
+    // );
     if (checkOut) {
       const loc = locations[checkOut.locationRef];
+      // Use a generic departure title unless it's a flight day (handled later)
       dayTitle = `Departure from ${loc?.name || checkOut.name}`;
       isTravelDay = true;
-      currentAccommodation = null; // Clear state *after* processing this day
+      // Clear state *after* processing this day (handled at the end of the loop)
     }
-    if (cruiseDisembark) {
-      const loc = locations[cruiseDisembark.arrivalPortRef];
-      dayTitle = `Cruise Arrival: ${loc?.name || "Port"}`;
-      isTravelDay = true;
-      currentCruise = null; // Clear state *after* processing this day
-    }
+    // Already removed cruiseDisembark block
 
     // 2. Determine *current* state based on *previous* day's end state
-    if (currentCruise) {
-      // If we ended yesterday on a cruise...
-      isCruiseDay = true;
-      const portCall = dayItems.find(
-        (item) => item.eventType === "cruise-port-call"
-      );
-      const seaDay = dayItems.find(
-        (item) => item.eventType === "cruise-sea-day"
-      );
-      if (portCall) {
-        const portLoc = locations[portCall.locationRef];
-        dayTitle = `Port Call: ${portLoc?.name || "Unknown Port"}`;
-      } else if (seaDay) {
-        dayTitle = `At Sea (${currentCruise.shipName})`;
-      } else {
-        // Should be disembark day if neither port nor sea day, handled above
-        dayTitle = `At Sea (${currentCruise.shipName})`; // Fallback
-      }
-      onCruise = currentCruise.shipName;
-      stayingAt = null; // Cannot be in accommodation and on cruise
-    } else if (currentAccommodation) {
+    // Already removed cruise state check block
+    if (currentAccommodation) {
       // If we ended yesterday in accommodation...
       const loc = locations[currentAccommodation.locationRef];
-      dayTitle = loc?.name || currentAccommodation.name;
-      stayingAt = currentAccommodation.name;
-      onCruise = null;
+      dayTitle = loc?.name || currentAccommodation.name; // Default title if not overridden
+      stayingAt = currentAccommodation.name; // You are staying here tonight
+      // onCruise = null; // Already removed
     } else {
-      // If not on cruise or in accommodation from yesterday, assume travel/transition
+      // If not in accommodation from yesterday, assume travel/transition
       stayingAt = null;
-      onCruise = null;
+      // onCruise = null; // Already removed
       // Title might be set by check-in/flight later
     }
 
-    // 3. Check for Check-in / Cruise Embark (Overrides title, sets state for *next* day)
+    // 3. Check for Check-in (Overrides title, sets state for *next* day)
+    // Note: Cruise embark is handled like accommodation check-in now
     const checkIn = dayItems.find(
-      (item) => item.eventType === "accommodation-check-in"
+      (item) =>
+        item.eventType === "accommodation-check-in" ||
+        item.eventType === "cruise-embark"
     );
-    const cruiseEmbark = dayItems.find(
-      (item) => item.eventType === "cruise-embark"
-    );
+    // const cruiseEmbark = dayItems.find( // Already removed
+    //   (item) => item.eventType === "cruise-embark"
+    // );
 
     if (checkIn) {
       const loc = locations[checkIn.locationRef];
       dayTitle = `Arrival in ${loc?.name || checkIn.name}`;
       isTravelDay = true;
       // Find the actual accommodation object to set for the *next* day's check
-      currentAccommodation =
-        accommodations.find((a) => a.id === checkIn.id) || null;
-      currentCruise = null; // Cannot check into hotel and be on cruise
+      // This state update happens at the end of the loop
       stayingAt = null; // Don't show "staying at" on check-in day itself
-      onCruise = null;
+      // currentCruise = null; // Already removed
+      // onCruise = null; // Already removed
     }
-    if (cruiseEmbark) {
-      const loc = locations[cruiseEmbark.departurePortRef];
-      dayTitle = `Cruise Departure: ${loc?.name || "Port"}`;
-      isTravelDay = true;
-      isCruiseDay = true; // Mark as a cruise event day
-      currentCruise = cruises.find((c) => c.id === cruiseEmbark.id) || null;
-      currentAccommodation = null; // Assume check out before cruise
-      stayingAt = null;
-      onCruise = null; // Don't show "staying on" indicator on embark day itself
-    }
+    // Already removed cruiseEmbark block
 
     // 4. Check for Flights (Marks as travel day, potentially overrides title)
     const flight = dayItems.find((item) => item.eventType === "flight");
@@ -455,11 +421,13 @@ function calculateDailyInfo(
       } else {
         dayTitle = "Travel Day (Flight)";
       }
-      // If flying, clear accommodation/cruise status unless checking in/embarking same day
-      if (!checkIn) currentAccommodation = null;
-      if (!cruiseEmbark) currentCruise = null;
-      stayingAt = null;
-      onCruise = null;
+      // If flying, clear accommodation status unless checking in same day
+      if (!checkIn) {
+        // Clear state *after* processing this day (handled at the end of the loop)
+        stayingAt = null; // Not staying anywhere tonight if flying out without checking in
+      }
+      // if (!cruiseEmbark) currentCruise = null; // Already removed
+      // onCruise = null; // Already removed
     }
 
     // 5. Final title check if still default and not explicitly travel
@@ -468,9 +436,7 @@ function calculateDailyInfo(
         // Should have been set earlier if staying
         const loc = locations[currentAccommodation.locationRef];
         dayTitle = loc?.name || currentAccommodation.name;
-      } else if (currentCruise) {
-        // Should have been set earlier if cruising
-        dayTitle = `At Sea (${currentCruise.shipName})`; // Default if somehow missed
+        // } else if (currentCruise) { // Already removed cruise check
       } else {
         // Look for *any* activity location?
         const firstActivity = dayItems.find(
@@ -491,16 +457,22 @@ function calculateDailyInfo(
     dailyInfoByDate[dateStr] = {
       title: dayTitle,
       stayingAt: stayingAt, // Where you are *staying* this night (determined by end of day state)
-      onCruise: onCruise, // Which ship you are *on* this night (determined by end of day state)
+      // onCruise: onCruise, // Already removed
     };
 
     // IMPORTANT: Update state *after* processing the day for the *next* iteration
     // If checking out today, clear accommodation for tomorrow's check
     if (checkOut) currentAccommodation = null;
-    // If disembarking today, clear cruise for tomorrow's check
-    if (cruiseDisembark) currentCruise = null;
-    // If checking in today, set accommodation for tomorrow's check (already done above)
-    // If embarking today, set cruise for tomorrow's check (already done above)
+    // If disembarking today, clear cruise for tomorrow's check (handled by checkOut)
+    // Removed cruise state updates
+    // if (cruiseDisembark) currentCruise = null; // Already removed
+
+    // If checking in today, set accommodation for tomorrow's check
+    if (checkIn) {
+      currentAccommodation =
+        accommodations.find((a) => a.id === checkIn.id) || null;
+    }
+    // If embarking today, set cruise for tomorrow's check (Handled by checkIn logic now)
   }
   return dailyInfoByDate;
 }
@@ -525,7 +497,7 @@ function structureDataForAlpine(
     const info = dailyInfoByDate[dateStr] || {
       title: "Error",
       stayingAt: null,
-      onCruise: null,
+      // onCruise: null, // Removed
     };
 
     // Find week for this day
@@ -552,56 +524,139 @@ function structureDataForAlpine(
         dayNumber: dayCounter,
         dayName: dayName,
         title: info.title,
-        stayingAt: info.stayingAt,
-        onCruise: info.onCruise,
-        items: items.map((item) => ({
-          // Process items slightly for easier display
-          ...item,
-          // Resolve location name if ref exists
-          locationName: item.locationRef
-            ? locations[item.locationRef]?.name || "Unknown Location"
-            : item.name || null,
-          // Use multiDayDescription if available, otherwise regular description
-          displayDescription:
-            item.multiDayDescription || item.description || "",
-          // Format location details string
-          formattedLocation: item.locationRef
-            ? formatLocation(locations[item.locationRef])
-            : item.location
-            ? formatLocation(item.location)
-            : null,
-          // Simplify check for generic explore activity
-          isGenericExplore:
-            item.eventType === "activity" &&
-            isGenericExploreActivity(item.description, info.title),
-        })),
+        stayingAt: info.stayingAt, // Pass stayingAt info
+        // onCruise: info.onCruise, // Removed
+        items: items.map((item) => {
+          const location = locations[item.locationRef];
+          // Use pre-fetched address from groupItineraryByDate if available, otherwise lookup
+          const address = item.locationAddress || location?.address;
+          const mapUrl = address
+            ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                address
+              )}`
+            : null;
+
+          return {
+            // Map raw item data to what the template needs
+            id: item.id,
+            eventType: item.eventType || item.type || "other", // Ensure eventType exists
+            time: item.time || item.startTime || null, // Handle different time properties
+            displayDescription: item.description || item.name || "", // Use description or name
+            // Use pre-fetched name from groupItineraryByDate if available, otherwise lookup
+            locationName: item.locationName || location?.name || null,
+            formattedLocation: formatLocation(location), // Pre-format location details for display
+            confirmation: item.confirmation || null,
+            notes: item.notes || null,
+            // Determine if it's a generic "Explore <Location>" activity
+            isGenericExplore: isGenericExploreActivity(
+              item.description,
+              info.title // Pass the calculated day title for comparison
+            ),
+            // Add tentative flag
+            tentative:
+              item.tentative || item.certainty === "tentative" || false,
+            // Add original type for potential styling/logic
+            originalType: item.type || null,
+            // Add URL if present
+            url: item.url || null,
+            // Add Google Maps link if address exists
+            mapUrl: mapUrl,
+            // Add icon name
+            icon: getIconForType(
+              item.eventType || item.type || "other",
+              item.description
+            ), // Pass description for context
+            // Flag check-in/out/embark/disembark for potential styling
+            isCheckInOut: item.isCheckInOut || false,
+          };
+        }),
       });
-    } else {
-      console.warn("Day outside of any defined week:", dateStr);
-      // Optionally handle days outside weeks, e.g., add to a default "Other" week
     }
   }
   return processedWeeks;
 }
 
-// --- Progress Calculation Utility ---
+// --- Icon Mapping ---
+function getIconForType(type, description = "") {
+  const typeLower = type?.toLowerCase() || "other";
+  const descLower = description?.toLowerCase() || "";
+
+  // Basic mapping - assumes Font Awesome classes (e.g., fas fa-...)
+  // Replace with actual icon classes/names as needed
+  const iconMap = {
+    flight: "fas fa-plane-departure", // More specific
+    "accommodation-check-in": "fas fa-sign-in-alt",
+    "accommodation-check-out": "fas fa-sign-out-alt",
+    "accommodation-stay": "fas fa-bed",
+    hotel: "fas fa-hotel", // If type is directly 'hotel'
+    airbnb: "fas fa-home", // If type is directly 'airbnb'
+    "cruise-embark": "fas fa-ship",
+    "cruise-disembark": "fas fa-anchor",
+    "cruise-stay": "fas fa-ship", // Use ship icon for stay days
+    "port-call": "fas fa-map-marked-alt", // More specific
+    "sea-day": "fas fa-water",
+    "car-rental": "fas fa-car",
+    activity: "fas fa-calendar-check", // Generic activity
+    shopping: "fas fa-shopping-bag",
+    meal: "fas fa-utensils", // Example for potential future type
+    park: "fas fa-tree",
+    gardens: "fas fa-leaf",
+    race: "fas fa-flag-checkered",
+    visit: "fas fa-landmark",
+    explore: "fas fa-binoculars", // For generic explore
+    travel: "fas fa-suitcase-rolling", // Generic travel
+    other: "fas fa-info-circle",
+  };
+
+  // Contextual overrides based on description
+  if (descLower.includes("disney") || descLower.includes("theme park"))
+    return "fas fa-magic";
+  if (
+    descLower.includes("stadium") ||
+    descLower.includes("match") ||
+    descLower.includes("game")
+  )
+    return "fas fa-futbol"; // Soccer ball
+  if (descLower.includes("capitol")) return "fas fa-landmark";
+  if (descLower.includes("garden")) return iconMap["gardens"];
+  if (descLower.includes("park") && !descLower.includes("shopping"))
+    return iconMap["park"];
+  if (descLower.includes("shopping")) return iconMap["shopping"];
+  if (descLower.includes("race")) return iconMap["race"];
+
+  // Handle variations like 'car-rental-pickup', 'car-rental-drop-off'
+  if (typeLower.startsWith("car-rental")) return iconMap["car-rental"];
+  // Handle accommodation types passed directly
+  if (typeLower === "hotel") return iconMap["hotel"];
+  if (typeLower === "airbnb") return iconMap["airbnb"];
+  // Default accommodation/cruise icons if specific event types aren't matched
+  if (typeLower.startsWith("accommodation"))
+    return iconMap["accommodation-stay"];
+  if (typeLower.startsWith("cruise")) return iconMap["cruise-stay"];
+  if (typeLower.includes("explore")) return iconMap["explore"];
+  if (typeLower.includes("visit")) return iconMap["visit"];
+
+  return iconMap[typeLower] || iconMap["other"]; // Fallback to 'other'
+}
+
+// --- Progress Calculation ---
 function calculateProgress(startDateUTC, endDateUTC, nowUTC) {
-  if (!startDateUTC || !endDateUTC) return 0;
+  if (!startDateUTC || !endDateUTC || !nowUTC) return 0;
   const totalDuration = endDateUTC - startDateUTC;
   const elapsedDuration = nowUTC - startDateUTC;
-
   if (totalDuration <= 0) return 100; // Avoid division by zero or negative duration
-  if (elapsedDuration <= 0) return 0; // Trip hasn't started
-  if (elapsedDuration >= totalDuration) return 100; // Trip is over
-
-  return Math.min(100, Math.max(0, (elapsedDuration / totalDuration) * 100));
+  const progress = Math.max(
+    0,
+    Math.min(100, (elapsedDuration / totalDuration) * 100)
+  );
+  return progress;
 }
 
 function getProgressText(progress) {
   if (progress <= 0) return "Trip hasn't started yet!";
-  if (progress >= 100) return "Trip complete!";
-  return `Trip is ${progress.toFixed(0)}% complete.`;
+  if (progress >= 100) return "Trip completed!";
+  return `Trip is ${progress.toFixed(1)}% complete.`;
 }
 
-// Note: No DOMContentLoaded listener needed anymore.
-// Alpine will call loadTripData() via x-init.
+// --- Alpine.js Component ---
+// (This part remains in index.html within the <script> tag)
